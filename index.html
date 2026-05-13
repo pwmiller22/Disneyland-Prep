@@ -685,8 +685,8 @@ const CONTENT = {
     venues:['dca'], attractions:['toy-story-mania','lamplight']},
   'toy-story-2':{id:'toy-story-2',title:'Toy Story 2',                 year:1999, type:'film',    runtime:'1h 32m', emoji:'🤠', group:'Pixar',
     poster:'https://image.tmdb.org/t/p/w300/qMzgF2uTpMCFJtKBlnFVB2hNiOZ.jpg',
-    desc:'Ambient presence in the land.',
-    venues:['dca'], attractions:['lamplight']},
+    desc:'Jessie the cowgirl is introduced in this sequel — and she hosts Jessie\'s Critter Carousel on Pixar Pier. Also adds emotional depth to the Toy Story land.',
+    venues:['dca'], attractions:['jessies-carousel','lamplight']},
   'toy-story-3':{id:'toy-story-3',title:'Toy Story 3',                 year:2010, type:'film',    runtime:'1h 43m', emoji:'🤠', group:'Pixar',
     poster:'https://image.tmdb.org/t/p/w300/xjjO3JIdnB6YdLBpbxeyCBFd4Qa.jpg',
     desc:'Ambient presence in the land.',
@@ -701,15 +701,15 @@ const CONTENT = {
     venues:['dca'], attractions:['lamplight']},
   'monsters':  {id:'monsters',  title:'Monsters, Inc.',                 year:2001, type:'film',    runtime:'1h 32m', emoji:'👾', group:'Pixar',
     poster:'https://image.tmdb.org/t/p/w300/a6uIXpSBepznyMqkAz9EGkb8OkQ.jpg',
-    desc:'Mike & Sulley to the Rescue (DCA) — a slow dark ride through the film\'s world.',
-    venues:['dca'], attractions:[]},
+    desc:'Mike & Sulley to the Rescue (DCA) — a slow dark ride through Monstropolis rescuing Boo. Knowing the film makes every scene and character immediately recognizable.',
+    venues:['dca'], attractions:['mike-sulley']},
   'nemo':      {id:'nemo',      title:'Finding Nemo',                   year:2003, type:'film',    runtime:'1h 40m', emoji:'🐠', group:'Pixar',
     poster:'https://image.tmdb.org/t/p/w300/2o9hBEVsrppKz7EbTgHF4NIwqCh.jpg',
-    desc:'Finding Nemo Submarine Voyage (Disneyland) — you descend beneath the lagoon and find Nemo.',
-    venues:['disneyland'], attractions:[]},
+    desc:'Finding Nemo Submarine Voyage (Disneyland) — you descend beneath the lagoon and encounter Nemo, Dory, Marlin, and the Great Barrier Reef characters via underwater windows and projection effects.',
+    venues:['disneyland'], attractions:['nemo-submarine']},
   'up':        {id:'up',        title:'Up',                             year:2009, type:'film',    runtime:'1h 36m', emoji:'🎈', group:'Pixar',
     poster:'https://image.tmdb.org/t/p/w300/65w3Oo5EChpbmNTBGPfEJCxqLkM.jpg',
-    desc:'Russell and Dug character appearances throughout DCA. The film\'s emotional power doesn\'t require a park visit — but it adds warmth to character encounters.',
+    desc:'Russell and Dug character appearances throughout DCA. The film\'s emotional opening makes character encounters unexpectedly moving — highly recommended watch regardless of park prep.',
     venues:['dca'], attractions:['lamplight']},
   // Classic Disney
   'princess-frog':{id:'princess-frog',title:'The Princess and the Frog',year:2009, type:'film',  runtime:'1h 37m', emoji:'🐸', group:'Classic Disney',
@@ -727,21 +727,49 @@ const CONTENT = {
     venues:['disneyland','hotel'], attractions:['castle-walkthrough','broken-spell']},
   'peter-pan': {id:'peter-pan', title:'Peter Pan',                      year:1953, type:'film',    runtime:'1h 17m', emoji:'🧚', group:'Classic Disney',
     poster:'https://image.tmdb.org/t/p/w300/lVHHcRqZHcnEzqQODSL4d6vSdJi.jpg',
-    desc:'Peter Pan\'s Flight — a classic Fantasyland dark ride. You fly over Neverland. One of the most charming original rides at the park.',
-    venues:['disneyland'], attractions:[]},
+    desc:'Peter Pan\'s Flight — you soar over London and Neverland in a flying pirate ship, looking down at the miniature world below. One of the most magical dark rides at Disneyland. The film makes every scene emotionally resonant.',
+    venues:['disneyland'], attractions:['peter-pan-ride']},
   'jungle-book':{id:'jungle-book',title:'The Jungle Book',              year:1967, type:'film',    runtime:'1h 18m', emoji:'🐻', group:'Classic Disney',
     poster:'https://image.tmdb.org/t/p/w300/vIDHn7dNGJqVcE4eTmmfvN0v8bR.jpg',
-    desc:'Jungle Cruise theming. Cast member skippers reference the animals and the world throughout the ride.',
-    venues:['disneyland'], attractions:[]},
+    desc:'Jungle Cruise skippers reference animals from The Jungle Book throughout the ride. The Adventureland Treehouse is themed around Swiss Family Robinson but Jungle Book\'s spirit pervades the whole land.',
+    venues:['disneyland'], attractions:['jungle-cruise']},
   'nbc':       {id:'nbc',       title:'The Nightmare Before Christmas',  year:1993, type:'film',    runtime:'1h 16m', emoji:'🎃', group:'Classic Disney',
     poster:'https://image.tmdb.org/t/p/w300/rAn5M4fEJGNJTFWJp3VbSM0fUDq.jpg',
-    desc:'Haunted Mansion Holiday overlay — active Halloween (mid-Aug through Oct 31) and Christmas (mid-Nov through early Jan) seasons only. Not applicable to a May visit.',
-    venues:['disneyland'], attractions:[], seasonal:true,
+    desc:'Haunted Mansion Holiday overlay transforms the entire ride into Jack Skellington\'s holiday takeover — active Halloween (mid-Aug through Oct 31) and Christmas (mid-Nov through early Jan) only. Not applicable to a May visit.',
+    venues:['disneyland'], attractions:['haunted-mansion-holiday'], seasonal:true,
     seasonalWindow:'halloween,christmas'},
   'little-mermaid':{id:'little-mermaid',title:'The Little Mermaid',    year:1989, type:'film',    runtime:'1h 23m', emoji:'🧜', group:'Classic Disney',
     poster:'https://image.tmdb.org/t/p/w300/xbs6a00M9ZoXtBDtCBqXHmLCnGe.jpg',
-    desc:'Ariel\'s Undersea Adventure (DCA) — a slow dark ride through the film\'s world.',
-    venues:['dca'], attractions:[]},
+    desc:'Ariel\'s Undersea Adventure (DCA) — a slow dark ride through the film\'s world with Audio-Animatronics of Ariel, Sebastian, Flounder, and Ursula.',
+    venues:['dca'], attractions:['little-mermaid-ride']},
+  // Additional Classic Disney
+  'alice':     {id:'alice',     title:'Alice in Wonderland',            year:1951, type:'film',    runtime:'1h 15m', emoji:'🐰', group:'Classic Disney',
+    desc:'Alice in Wonderland at Disneyland is a beloved dark ride through the White Rabbit\'s world — caterpillars, Cheshire Cats, and the Queen of Hearts. One of the few Fantasyland rides unique to Disneyland. Knowing the film enriches every scene.',
+    venues:['disneyland'], attractions:['alice-ride']},
+  'snow-white':{id:'snow-white',title:"Snow White's Enchanted Wish",    year:1937, type:'film',    runtime:'1h 23m', emoji:'🍎', group:'Classic Disney',
+    desc:'Snow White\'s Enchanted Wish is a reimagined Fantasyland dark ride through the fairy tale — Evil Queen, dwarfs, the wishing well, and a happy ending. The film gives the ride its emotional arc.',
+    venues:['disneyland'], attractions:['snow-white-ride']},
+  'pinocchio':{id:'pinocchio', title:'Pinocchio',                       year:1940, type:'film',    runtime:'1h 28m', emoji:'🪆', group:'Classic Disney',
+    desc:'Pinocchio\'s Daring Journey takes you through Pleasure Island, Stromboli\'s wagon, and Monstro the whale. One of the most underrated dark rides at Disneyland — the film adds real stakes to every scene.',
+    venues:['disneyland'], attractions:['pinocchio-ride']},
+  'roger-rabbit-film':{id:'roger-rabbit-film',title:'Who Framed Roger Rabbit',year:1988,type:'film',runtime:'1h 44m',emoji:'🐰',group:'Classic Disney',
+    desc:'Roger Rabbit\'s Car Toon Spin in Toontown is themed entirely around this film. You spin through Toontown chasing the Weasels alongside Roger. Knowing the film makes the setting and characters click.',
+    venues:['disneyland'], attractions:['roger-rabbit']},
+  'fantasia':  {id:'fantasia',  title:'Fantasia',                       year:1940, type:'film',    runtime:'2h 4m',  emoji:'🎵', group:'Classic Disney',
+    desc:'Fantasia\'s Sorcerer\'s Apprentice sequence is the inspiration for Fantasmic! — Mickey\'s magical powers, the brooms, the flood. The nighttime spectacular draws heavily from this film.',
+    venues:['disneyland'], attractions:['fantasmic']},
+  'lion-king': {id:'lion-king', title:'The Lion King',                  year:1994, type:'film',    runtime:'1h 28m', emoji:'🦁', group:'Classic Disney',
+    desc:'Simba appears in Fantasmic! as one of the classic Disney heroes Mickey summons. Recognizing the character adds to the show\'s emotional climax.',
+    venues:['disneyland'], attractions:['fantasmic']},
+  'aladdin':   {id:'aladdin',   title:'Aladdin',                        year:1992, type:'film',    runtime:'1h 30m', emoji:'🪔', group:'Classic Disney',
+    desc:'Aladdin and Jasmine feature in Fantasmic! — the magic carpet sequence is a highlight of the show.',
+    venues:['disneyland'], attractions:['fantasmic']},
+  'beauty-beast':{id:'beauty-beast',title:'Beauty and the Beast',       year:1991, type:'film',    runtime:'1h 24m', emoji:'🌹', group:'Classic Disney',
+    desc:'Belle and the Beast appear in Fantasmic!, one of the show\'s most visually striking character moments.',
+    venues:['disneyland'], attractions:['fantasmic']},
+  'mulan':     {id:'mulan',     title:'Mulan',                          year:1998, type:'film',    runtime:'1h 27m', emoji:'🐉', group:'Classic Disney',
+    desc:'Mulan features in the World of Color show and Fantasmic! as one of the Disney heroes.',
+    venues:['disneyland','dca'], attractions:['fantasmic','world-of-color']},
 };
 
 const ATTRACTIONS = {
@@ -860,6 +888,117 @@ const ATTRACTIONS = {
     desc:"The original on-site hotel. Goofy's Kitchen: character dining with Mickey, Minnie, and friends (breakfast/dinner). Tangaroa Terrace: tropical food, Dole Whip with rum. Broken Spell Lounge: Sleeping Beauty themed, a hidden gem. Fantasia-themed pool.",
     content:['sleeping-beauty'],
     url:'https://disneyland.disney.go.com/hotels/disneyland-hotel/'},
+  // ── New attractions added in comprehensive pass ──
+  'haunted-mansion':{id:'haunted-mansion',emoji:'👻',name:"Haunted Mansion",type:'Ride',typeClass:'type-ride',
+    location:"Disneyland Park — New Orleans Square",
+    desc:"999 happy haunts await in one of Disney's most beloved dark rides. A doom buggy carries you through the stretching room, endless hallway, ballroom, attic, and graveyard. No film prep needed — the ride is its own self-contained world. During Halloween and Christmas seasons, it's overlaid with The Nightmare Before Christmas theming.",
+    content:[],
+    url:'https://disneyland.disney.go.com/attractions/disneyland/haunted-mansion/'},
+  'haunted-mansion-holiday':{id:'haunted-mansion-holiday',emoji:'🎃',name:"Haunted Mansion Holiday",type:'Ride',typeClass:'type-ride',
+    location:"Disneyland Park — New Orleans Square (seasonal)",
+    desc:"The beloved NBC overlay transforms the Haunted Mansion into Jack Skellington's holiday takeover. Every room is reimagined with characters from the film. Active mid-August through October 31 (Halloween) and mid-November through early January (Christmas). Requires knowing The Nightmare Before Christmas to fully appreciate.",
+    content:['nbc'],
+    url:'https://disneyland.disney.go.com/attractions/disneyland/haunted-mansion-holiday/'},
+  'fantasmic':{id:'fantasmic',emoji:'🌟',name:"Fantasmic!",type:'Show',typeClass:'type-show',
+    location:"Disneyland Park — Rivers of America (New Orleans Square waterfront)",
+    desc:"Disneyland's signature nighttime spectacular. Mickey Mouse battles the villains of Disney's most iconic films using water screens, projection, fire effects, and live performers. Features characters and sequences from Fantasia, The Lion King, Aladdin, Beauty and the Beast, Snow White, Sleeping Beauty, and more. One of the best theme park shows ever made. Two performances nightly — get there 45+ min early.",
+    content:['fantasia','lion-king','aladdin','beauty-beast','sleeping-beauty','mulan'],
+    url:'https://disneyland.disney.go.com/entertainment/disneyland/fantasmic/'},
+  'peter-pan-ride':{id:'peter-pan-ride',emoji:'🧚',name:"Peter Pan's Flight",type:'Ride',typeClass:'type-ride',
+    location:"Disneyland Park — Fantasyland",
+    desc:"One of Disneyland's original 1955 rides. You board a flying pirate ship and soar over a miniature London, then Neverland. The overhead perspective looking down at the tiny world below is genuinely magical — a signature Disneyland experience that rewards knowing the film.",
+    content:['peter-pan'],
+    url:'https://disneyland.disney.go.com/attractions/disneyland/peter-pan-flight/'},
+  'alice-ride':{id:'alice-ride',emoji:'🐰',name:"Alice in Wonderland",type:'Ride',typeClass:'type-ride',
+    location:"Disneyland Park — Fantasyland",
+    desc:"A caterpillar dark ride through the looking glass — Cheshire Cat, Mad Hatter's tea party, Queen of Hearts, and more. Unique to Disneyland (no Walt Disney World equivalent). Whimsical and charming, best experienced knowing the film.",
+    content:['alice'],
+    url:'https://disneyland.disney.go.com/attractions/disneyland/alice-in-wonderland/'},
+  'snow-white-ride':{id:'snow-white-ride',emoji:'🍎',name:"Snow White's Enchanted Wish",type:'Ride',typeClass:'type-ride',
+    location:"Disneyland Park — Fantasyland",
+    desc:"A reimagined dark ride through the Snow White fairy tale — Evil Queen transformations, Dopey and the dwarfs, the wishing well, and a storybook ending. Recently updated with new scenes and the 'Someday My Prince Will Come' finale.",
+    content:['snow-white'],
+    url:'https://disneyland.disney.go.com/attractions/disneyland/snow-whites-enchanted-wish/'},
+  'pinocchio-ride':{id:'pinocchio-ride',emoji:'🪆',name:"Pinocchio's Daring Journey",type:'Ride',typeClass:'type-ride',
+    location:"Disneyland Park — Fantasyland",
+    desc:"A dark ride through Pinocchio's misadventures — Stromboli's wagon, Pleasure Island, Monstro the whale. One of the more intense classic Fantasyland rides. Knowing the film makes the danger feel real.",
+    content:['pinocchio'],
+    url:'https://disneyland.disney.go.com/attractions/disneyland/pinocchios-daring-journey/'},
+  'roger-rabbit':{id:'roger-rabbit',emoji:'🐰',name:"Roger Rabbit's Car Toon Spin",type:'Ride',typeClass:'type-ride',
+    location:"Disneyland Park — Mickey's Toontown",
+    desc:"A spinning dark ride through Toontown as you help Roger Rabbit escape the Weasels. You control your own spin via a steering wheel — the only controllable spin at Disneyland. Film knowledge adds context to every villain encounter.",
+    content:['roger-rabbit-film'],
+    url:'https://disneyland.disney.go.com/attractions/disneyland/roger-rabbits-car-toon-spin/'},
+  'jungle-cruise':{id:'jungle-cruise',emoji:'🚣',name:"Jungle Cruise",type:'Ride',typeClass:'type-ride',
+    location:"Disneyland Park — Adventureland",
+    desc:"A classic 1955 boat ride through animatronic jungles of Asia, Africa, and South America. Famous for its punny skipper commentary — the jokes are the ride. Loosely references The Jungle Book's animal world. No film prep needed, but knowing the animals adds appreciation.",
+    content:['jungle-book'],
+    url:'https://disneyland.disney.go.com/attractions/disneyland/jungle-cruise/'},
+  'nemo-submarine':{id:'nemo-submarine',emoji:'🐠',name:"Finding Nemo Submarine Voyage",type:'Ride',typeClass:'type-ride',
+    location:"Disneyland Park — Tomorrowland",
+    desc:"Board a submarine that 'submerges' into the lagoon, where you watch Nemo, Dory, and friends through portholes via projection and practical effects. A unique Disneyland experience — no equivalent exists at other Disney parks. Great for families; the film brings every character to life.",
+    content:['nemo'],
+    url:'https://disneyland.disney.go.com/attractions/disneyland/finding-nemo-submarine-voyage/'},
+  'mike-sulley':{id:'mike-sulley',emoji:'👾',name:"Monsters, Inc. Mike & Sulley to the Rescue!",type:'Ride',typeClass:'type-ride',
+    location:"Disney California Adventure — San Fransokyo Square",
+    desc:"A slow dark taxi ride through Monstropolis as Mike and Sulley try to return Boo to her bedroom before the CDA catches them. Recreates key scenes from the film with Audio-Animatronics. Knowing the film makes the urgency and humor click.",
+    content:['monsters'],
+    url:'https://disneyland.disney.go.com/attractions/disney-california-adventure/monsters-inc-mike-sulley-to-the-rescue/'},
+  'little-mermaid-ride':{id:'little-mermaid-ride',emoji:'🧜',name:"The Little Mermaid — Ariel's Undersea Adventure",type:'Ride',typeClass:'type-ride',
+    location:"Disney California Adventure — Paradise Gardens Park",
+    desc:"A slow clamshell dark ride under the sea — Ariel, Sebastian, Flounder, and Ursula all feature in detailed Audio-Animatronic scenes. Recreates the film's most iconic songs. Knowing the film makes each scene a moment of recognition.",
+    content:['little-mermaid'],
+    url:'https://disneyland.disney.go.com/attractions/disney-california-adventure/little-mermaid-ariels-undersea-adventure/'},
+  'luigis':{id:'luigis',emoji:'🚗',name:"Luigi's Rollickin' Roadsters",type:'Ride',typeClass:'type-ride',
+    location:"Disney California Adventure — Cars Land",
+    desc:"Cars dance to Italian music in this spinning, unpredictable ride — no two rides are the same. Luigi and Guido from Cars host the experience. Low intensity, fun for all ages. Knowing the Cars characters makes the theming enjoyable.",
+    content:['cars-1'],
+    url:'https://disneyland.disney.go.com/attractions/disney-california-adventure/luigis-rollickin-roadsters/'},
+  'jessies-carousel':{id:'jessies-carousel',emoji:'🤠',name:"Jessie's Critter Carousel",type:'Ride',typeClass:'type-ride',
+    location:"Disney California Adventure — Pixar Pier",
+    desc:"A colorful carousel featuring critters from Toy Story and other Pixar films as ride vehicles — skunks, turtles, snails, and more, all with Jessie as host. Family-friendly, great for young kids. Toy Story 2 introduced Jessie.",
+    content:['toy-story-2'],
+    url:'https://disneyland.disney.go.com/attractions/disney-california-adventure/jessies-critter-carousel/'},
+  'soarin':{id:'soarin',emoji:'🌍',name:"Soarin' Around the World",type:'Ride',typeClass:'type-ride',
+    location:"Disney California Adventure — Grizzly Peak",
+    desc:"A hang-gliding simulator over the world's most iconic landscapes — the Great Wall, Eiffel Tower, Sydney Opera House, Matterhorn, and more. No film prep needed. Soarin' Across America (US-themed version) opens July 2, 2026 — after your May dates, so the international version will be running.",
+    content:[],
+    url:'https://disneyland.disney.go.com/attractions/disney-california-adventure/soarin-around-the-world/'},
+  'hyperspace-mountain':{id:'hyperspace-mountain',emoji:'🚀',name:"Space Mountain / Hyperspace Mountain",type:'Ride',typeClass:'type-ride',
+    location:"Disneyland Park — Tomorrowland",
+    desc:"A classic indoor roller coaster through the darkness of space. Periodically overlaid as Hyperspace Mountain with a Star Wars X-wing battle theme — check the schedule for which version is running during your visit. No film prep needed for Space Mountain; Star Wars knowledge enhances the Hyperspace overlay.",
+    content:['sw-anh'],
+    url:'https://disneyland.disney.go.com/attractions/disneyland/space-mountain/'},
+  'big-thunder':{id:'big-thunder',emoji:'⛏️',name:"Big Thunder Mountain Railroad",type:'Ride',typeClass:'type-ride',
+    location:"Disneyland Park — Frontierland",
+    desc:"The wildest ride in the wilderness — a runaway mine train through the red rock canyons of the American West. No film tie-in, but one of Disneyland's most beloved classic coasters. Fast, fun, and great for all ages above the height requirement.",
+    content:[],
+    url:'https://disneyland.disney.go.com/attractions/disneyland/big-thunder-mountain-railroad/'},
+  'its-a-small-world':{id:'its-a-small-world',emoji:'🌍',name:"it's a small world",type:'Ride',typeClass:'type-ride',
+    location:"Disneyland Park — Fantasyland",
+    desc:"The classic 1964 World's Fair boat ride — children of the world in colorful cultural costumes, singing the iconic song through elaborately themed room after room. No film prep needed. One of Disney's most iconic experiences and a must-ride at least once.",
+    content:[],
+    url:'https://disneyland.disney.go.com/attractions/disneyland/its-a-small-world/'},
+  'matterhorn':{id:'matterhorn',emoji:'🏔️',name:"Matterhorn Bobsleds",type:'Ride',typeClass:'type-ride',
+    location:"Disneyland Park — Fantasyland/Tomorrowland border",
+    desc:"One of the first tubular steel roller coasters ever built (1959). A bobsled chase through an icy Swiss mountain — with a Yeti lurking inside. No film tie-in. A Disneyland original and one of its most recognizable landmarks.",
+    content:[],
+    url:'https://disneyland.disney.go.com/attractions/disneyland/matterhorn-bobsleds/'},
+  'better-together':{id:'better-together',emoji:'🎉',name:"Better Together: A Pixar Pals Celebration!",type:'Show',typeClass:'type-show',
+    location:"Disney California Adventure — Buena Vista Street",
+    desc:"A daytime parade featuring floats from Toy Story, Cars, The Incredibles, Coco, Soul, Inside Out, and more. Characters ride atop colorful floats accompanied by their film's music. The more Pixar films you've seen, the more each float resonates.",
+    content:['toy-story-1','cars-1','incredibles','coco','inside-out-1'],
+    url:'https://disneyland.disney.go.com/entertainment/disney-california-adventure/better-together/'},
+  'ancient-sanctum':{id:'ancient-sanctum',emoji:'🔮',name:"Ancient Sanctum — Doctor Strange Live Show",type:'Show',typeClass:'type-show',
+    location:"Disney California Adventure — Avengers Campus",
+    desc:"Doctor Strange performs a live sanctum show multiple times daily in the Avengers Campus courtyard, demonstrating his sling ring powers and conjuring interdimensional portals. Knowing the Doctor Strange film makes every spell and reference land.",
+    content:['dr-strange'],
+    url:'https://disneyland.disney.go.com/entertainment/disney-california-adventure/ancient-sanctum/'},
+  'goofy-sky-school':{id:'goofy-sky-school',emoji:'✈️',name:"Goofy's Sky School",type:'Ride',typeClass:'type-ride',
+    location:"Disney California Adventure — Grizzly Peak",
+    desc:"A wild mouse-style roller coaster themed around Goofy's aviation school. Erratic turns and surprising drops make this more intense than it looks. No film prep needed — classic Goofy character theming throughout.",
+    content:[],
+    url:'https://disneyland.disney.go.com/attractions/disney-california-adventure/goofys-sky-school/'},
 };
 
 // ══════════════════════════════════════════════════════════
@@ -874,6 +1013,7 @@ const GROUP_PALETTES = {
   'Avengers Campus': { bg1:'#0A0A1A', bg2:'#1A0A0A', accent:'#C41E3A', text:'#FF6B6B', star:false },
   'Pixar':           { bg1:'#0A1A2A', bg2:'#1A2A3A', accent:'#4FC3F7', text:'#E0F4FF', star:true },
   'Classic Disney':  { bg1:'#1A0A1A', bg2:'#2A1A2A', accent:'#C9A84C', text:'#E8D5A0', star:true },
+  'Fantasyland':     { bg1:'#0A1020', bg2:'#1A2030', accent:'#B39DDB', text:'#EDE7F6', star:true },
 };
 
 const TYPE_PALETTES = {
@@ -1456,7 +1596,7 @@ function buildWatchlist(data){
       saveUserData(currentUser,d2);
       updateStats(d2);
       // Rebuild after short delay for animation
-      setTimeout(()=>{ const d3=getUserData(currentUser); buildWatchlist(d3); buildChecklist(d3); },350);
+      setTimeout(()=>{ const d3=getUserData(currentUser); buildWatchlist(d3); buildChecklist(d3); buildAttractionsList(d3); },350);
     });
 
     box.appendChild(item);
@@ -1492,13 +1632,16 @@ function wlHide(id){ const d=getUserData(currentUser); d.wlHidden=d.wlHidden||{}
 function wlUnhide(id){ const d=getUserData(currentUser); d.wlHidden=d.wlHidden||{}; delete d.wlHidden[id]; saveUserData(currentUser,d); buildWatchlist(d); }
 
 function checkAttrVenue(attrId,venues){
-  // Simple check — all our DCA attractions need dca, disneyland need disneyland
-  const dcaAttrs=['inside-out-whirlwind','lamplight','radiator-springs','flos','cars-land','avengers-campus','mission-breakout','web-slingers','incredicoaster','toy-story-mania','world-of-color','little-mermaid'];
-  const hotelAttrs=['broken-spell','disneyland-hotel'];
-  const downtownAttrs=['downtown-disney'];
-  if(dcaAttrs.includes(attrId)) return venues.includes('dca');
-  if(hotelAttrs.includes(attrId)) return venues.includes('hotel');
-  if(downtownAttrs.includes(attrId)) return venues.includes('downtown');
+  const dcaIds=['inside-out-whirlwind','lamplight','radiator-springs','flos','cars-land','avengers-campus',
+    'mission-breakout','web-slingers','incredicoaster','toy-story-mania','world-of-color',
+    'little-mermaid-ride','mike-sulley','luigis','jessies-carousel','soarin','goofy-sky-school',
+    'better-together','ancient-sanctum'];
+  const hotelIds=['broken-spell','disneyland-hotel'];
+  const downtownIds=['downtown-disney'];
+  // Everything else is Disneyland Park
+  if(dcaIds.includes(attrId)) return venues.includes('dca');
+  if(hotelIds.includes(attrId)) return venues.includes('hotel');
+  if(downtownIds.includes(attrId)) return venues.includes('downtown');
   return venues.includes('disneyland');
 }
 
@@ -1536,6 +1679,7 @@ function buildChecklist(data){
         saveUserData(currentUser,d2);
         updateStats(d2);
         buildWatchlist(d2);
+        buildAttractionsList(d2);
       };
       el.appendChild(ci);
     });
@@ -1548,12 +1692,13 @@ function buildChecklist(data){
 function buildAttractionsList(data){
   const el=document.getElementById('attractions-list'); el.innerHTML='';
   const sections=[
-    {label:'⚔️ Star Wars — Galaxy\'s Edge',ids:['galaxys-edge','rise-resistance','mf-smugglers','ogas','milk-stand','savis']},
-    {label:'✨ Pixar',ids:['inside-out-whirlwind','lamplight','incredicoaster','toy-story-mania']},
-    {label:'🦸 Marvel — Avengers Campus',ids:['avengers-campus','mission-breakout','web-slingers']},
-    {label:'🚗 Cars Land',ids:['cars-land','radiator-springs','flos']},
-    {label:'🏰 Classic Disney',ids:['indy','tianas','castle-walkthrough']},
-    {label:'🌃 Entertainment',ids:['world-of-color']},
+    {label:'⚔️ Star Wars — Galaxy\'s Edge',ids:['galaxys-edge','rise-resistance','mf-smugglers','ogas','milk-stand','savis','hyperspace-mountain']},
+    {label:'✨ Pixar',ids:['inside-out-whirlwind','lamplight','incredicoaster','toy-story-mania','jessies-carousel','mike-sulley','nemo-submarine','little-mermaid-ride']},
+    {label:'🦸 Marvel — Avengers Campus',ids:['avengers-campus','mission-breakout','web-slingers','ancient-sanctum']},
+    {label:'🚗 Cars Land',ids:['cars-land','radiator-springs','flos','luigis']},
+    {label:'🏰 Classic Disneyland',ids:['haunted-mansion','haunted-mansion-holiday','peter-pan-ride','alice-ride','snow-white-ride','pinocchio-ride','roger-rabbit','jungle-cruise','its-a-small-world','matterhorn','big-thunder','indy','tianas','castle-walkthrough']},
+    {label:'🌃 Entertainment & Shows',ids:['fantasmic','world-of-color','better-together']},
+    {label:'🎢 DCA Rides',ids:['soarin','goofy-sky-school']},
     {label:'🏨 Hotel & Downtown',ids:['broken-spell','disneyland-hotel','downtown-disney']},
   ];
   sections.forEach(s=>{
