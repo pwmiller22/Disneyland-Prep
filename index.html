@@ -1,0 +1,1970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Disneyland — Family Prep Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#C9A84C;--gold-l:#E8D5A0;--gold-d:#8B6914;--gold-glow:rgba(201,168,76,.25);
+  --navy:#080F1C;--navy-1:#0D1928;--navy-2:#132034;--navy-3:#1A2B44;
+  --cream:#F2EDE3;--cream-2:rgba(242,237,227,.6);--cream-3:rgba(242,237,227,.2);
+  --green:#4CAF7D;--blue:#6EB5D4;--purple:#C9A0DC;--red:#E07070;--orange:#E0A050;
+  --r:12px;--r2:16px;--border:rgba(201,168,76,.15);
+  --shadow:0 8px 32px rgba(0,0,0,.4);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--cream);min-height:100vh;overflow-x:hidden}
+
+/* ─── STARFIELD ─── */
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d,3s) var(--delay,0s) infinite}
+@keyframes twinkle{0%,100%{opacity:var(--min,.1)}50%{opacity:var(--max,.8)}}
+#glow-top{position:fixed;top:0;left:0;right:0;height:400px;
+  background:radial-gradient(ellipse at 50% -10%,rgba(201,168,76,.12) 0%,transparent 65%);
+  pointer-events:none;z-index:0}
+
+/* ─── LAYOUT ─── */
+.wrap{max-width:720px;margin:0 auto;padding:0 1.25rem 6rem;position:relative;z-index:1}
+
+/* ─── TRANSITIONS ─── */
+.screen{display:none;animation:fadeUp .45s cubic-bezier(.22,1,.36,1) both}
+.screen.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.slide-in{animation:slideIn .4s cubic-bezier(.22,1,.36,1) both}
+@keyframes slideIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:none}}
+.pop-in{animation:popIn .35s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes popIn{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:scale(1)}}
+
+/* ─── HEADER ─── */
+header{text-align:center;padding:3rem 0 2rem;border-bottom:1px solid var(--border);margin-bottom:2rem}
+.castle{font-size:3rem;display:block;filter:drop-shadow(0 0 20px rgba(201,168,76,.6));margin-bottom:.6rem;
+  animation:float 4s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+h1.logo{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,6vw,3.2rem);font-weight:700;
+  color:var(--gold-l);letter-spacing:.02em;line-height:1}
+.logo-sub{font-size:.76rem;color:var(--cream-2);letter-spacing:.14em;text-transform:uppercase;margin-top:.4rem}
+.trip-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(201,168,76,.1);
+  border:1px solid rgba(201,168,76,.3);border-radius:100px;padding:4px 14px;
+  font-size:.75rem;color:var(--gold-l);margin-top:.75rem;letter-spacing:.05em}
+
+/* ─── TYPOGRAPHY ─── */
+.serif{font-family:'Cormorant Garamond',serif}
+.section-label{font-size:.72rem;font-weight:500;color:var(--gold);letter-spacing:.1em;
+  text-transform:uppercase;padding-bottom:7px;border-bottom:1px solid var(--border);margin-bottom:.75rem}
+
+/* ─── CARDS ─── */
+.card{background:var(--navy-2);border:1px solid var(--border);border-radius:var(--r2);padding:1.25rem}
+.card+.card{margin-top:10px}
+
+/* ─── BUTTONS ─── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  padding:11px 20px;border-radius:var(--r);cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:500;
+  transition:all .2s;border:1px solid;white-space:nowrap}
+.btn-gold{background:rgba(201,168,76,.12);border-color:rgba(201,168,76,.4);color:var(--gold-l)}
+.btn-gold:hover{background:rgba(201,168,76,.22);border-color:rgba(201,168,76,.6);
+  box-shadow:0 0 16px rgba(201,168,76,.2)}
+.btn-solid{background:var(--gold);border-color:var(--gold);color:var(--navy);font-weight:600}
+.btn-solid:hover{background:var(--gold-l);box-shadow:0 0 20px rgba(201,168,76,.4)}
+.btn-ghost{background:transparent;border-color:var(--border);color:var(--cream-2)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold-l)}
+.btn-danger{background:transparent;border-color:rgba(220,80,80,.2);color:rgba(220,120,120,.5);font-size:.8rem;padding:8px 14px}
+.btn-danger:hover{border-color:rgba(220,80,80,.5);color:rgba(220,120,120,.9)}
+.btn-block{width:100%;margin-top:10px}
+.btn-sm{padding:7px 13px;font-size:.78rem;border-radius:8px}
+
+/* ─── INPUTS ─── */
+input,select,textarea{background:var(--navy-2);border:1px solid var(--border);border-radius:var(--r);
+  color:var(--cream);font-family:'DM Sans',sans-serif;font-size:.88rem;padding:10px 14px;
+  outline:none;transition:border-color .2s;width:100%}
+input:focus,select:focus{border-color:rgba(201,168,76,.55)}
+input::placeholder{color:var(--cream-3)}
+select option{background:var(--navy-2);color:var(--cream)}
+label.field-label{display:block;font-size:.76rem;color:var(--cream-2);margin-bottom:5px;letter-spacing:.03em}
+
+/* ─── TAGS ─── */
+.tag{display:inline-block;font-size:.66rem;padding:2px 8px;border-radius:100px;
+  margin-left:5px;vertical-align:middle;letter-spacing:.02em}
+.tag-new{background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.35);color:var(--gold-l)}
+.tag-pri{background:rgba(76,175,125,.15);border:1px solid rgba(76,175,125,.4);color:var(--green)}
+.tag-rw{background:rgba(110,181,212,.15);border:1px solid rgba(110,181,212,.35);color:var(--blue)}
+.tag-seasonal{background:rgba(220,100,100,.15);border:1px solid rgba(220,100,100,.35);color:var(--red)}
+.tag-family{background:rgba(201,160,220,.15);border:1px solid rgba(201,160,220,.35);color:var(--purple)}
+
+/* ─── PROGRESS ─── */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem}
+.stat-box{background:var(--navy-2);border:1px solid var(--border);border-radius:var(--r);
+  padding:.85rem;text-align:center}
+.stat-n{font-family:'Cormorant Garamond',serif;font-size:2.1rem;font-weight:700;
+  color:var(--gold);display:block;line-height:1}
+.stat-l{font-size:.68rem;color:var(--cream-2);text-transform:uppercase;letter-spacing:.09em;
+  margin-top:3px;display:block}
+.prog-bar{height:4px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold-d),var(--gold));
+  border-radius:100px;transition:width .6s cubic-bezier(.22,1,.36,1)}
+
+/* ─── TABS ─── */
+.tabs{display:flex;gap:4px;background:rgba(255,255,255,.03);border-radius:var(--r);
+  padding:4px;margin-bottom:1.5rem}
+.tab-btn{flex:1;padding:8px 4px;border-radius:8px;border:none;background:transparent;
+  color:var(--cream-2);font-family:'DM Sans',sans-serif;font-size:.79rem;
+  cursor:pointer;transition:all .2s;letter-spacing:.02em}
+.tab-btn.active{background:rgba(201,168,76,.18);color:var(--gold-l);font-weight:500}
+.tab-pane{display:none}
+.tab-pane.active{display:block;animation:fadeUp .3s ease both}
+
+/* ─── CHECKLIST ITEMS ─── */
+.ci{display:flex;align-items:flex-start;gap:11px;padding:10px;border-radius:var(--r);
+  cursor:pointer;transition:background .15s;border:1px solid transparent;margin-bottom:3px}
+.ci:hover{background:rgba(255,255,255,.03);border-color:var(--border)}
+.ci-cb{width:20px;height:20px;border-radius:50%;flex-shrink:0;margin-top:2px;
+  border:1.5px solid rgba(201,168,76,.32);display:flex;align-items:center;
+  justify-content:center;background:transparent;transition:all .25s}
+.ci.checked .ci-cb{background:var(--gold);border-color:var(--gold);transform:scale(1.1)}
+.ci-check{display:none;color:var(--navy);font-size:11px;font-weight:700}
+.ci.checked .ci-check{display:block}
+.ci-body{flex:1;min-width:0}
+.ci-title{font-size:.88rem;color:var(--cream);line-height:1.3;transition:color .2s}
+.ci.checked .ci-title{color:var(--cream-2);text-decoration:line-through}
+.ci-meta{font-size:.72rem;color:var(--cream-3);margin-top:2px}
+.ci-links{margin-top:5px;display:flex;flex-wrap:wrap;gap:4px}
+.ci-link{display:inline-flex;align-items:center;gap:3px;font-size:.69rem;
+  color:rgba(201,168,76,.65);background:rgba(255,255,255,.025);
+  border:1px solid var(--border);border-radius:6px;padding:2px 8px;
+  cursor:pointer;transition:all .15s;text-decoration:none}
+.ci-link:hover{color:var(--gold-l);border-color:rgba(201,168,76,.4);background:rgba(201,168,76,.08)}
+
+/* ─── WATCHLIST CARD ─── */
+.wi{display:flex;align-items:flex-start;gap:12px;padding:11px 0;
+  border-bottom:1px solid rgba(201,168,76,.08);cursor:pointer;transition:all .2s}
+.wi:last-child{border-bottom:none;padding-bottom:0}
+.wi-num{width:28px;height:28px;border-radius:50%;flex-shrink:0;margin-top:1px;
+  background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.28);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.75rem;font-weight:500;color:var(--gold);transition:all .25s}
+.wi.watched .wi-num{background:var(--gold);color:var(--navy);border-color:var(--gold);transform:scale(1.1)}
+.wi-body{flex:1;min-width:0}
+.wi-title{font-size:.88rem;color:var(--cream);line-height:1.3;transition:color .2s}
+.wi.watched .wi-title{color:var(--cream-2);text-decoration:line-through}
+.wi-detail{font-size:.74rem;color:var(--cream-2);margin-top:3px;line-height:1.5}
+.wi-runtime{font-size:.72rem;color:rgba(201,168,76,.55);white-space:nowrap;padding-top:2px}
+.attr-pill{display:inline-flex;align-items:center;gap:3px;font-size:.69rem;
+  color:var(--gold-l);background:rgba(201,168,76,.08);
+  border:1px solid rgba(201,168,76,.2);border-radius:6px;padding:2px 8px;
+  cursor:pointer;transition:all .15s;margin-top:4px;margin-right:3px}
+.attr-pill:hover{background:rgba(201,168,76,.18);border-color:rgba(201,168,76,.5)}
+
+/* ─── PROFILE CARDS ─── */
+.profiles-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:1.5rem}
+.profile-card{background:var(--navy-2);border:1px solid var(--border);border-radius:var(--r2);
+  padding:1.25rem .75rem;text-align:center;cursor:pointer;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1),border-color .2s,box-shadow .2s;
+  position:relative}
+.profile-card:hover{transform:translateY(-4px);border-color:rgba(201,168,76,.5);
+  box-shadow:0 12px 28px rgba(0,0,0,.3),0 0 16px rgba(201,168,76,.12)}
+.p-edit-btn{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.06);
+  border:none;border-radius:6px;width:24px;height:24px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:.7rem;
+  color:var(--cream-2);transition:all .15s;opacity:0}
+.profile-card:hover .p-edit-btn{opacity:1}
+.p-edit-btn:hover{background:rgba(201,168,76,.2);color:var(--gold-l)}
+.p-avatar{font-size:1.9rem;display:block;margin-bottom:.5rem}
+.p-name{font-size:.88rem;font-weight:500;color:var(--cream)}
+.p-prog{font-size:.69rem;color:var(--cream-2);margin-top:3px}
+.pip{height:3px;background:rgba(255,255,255,.07);border-radius:100px;overflow:hidden;margin-top:8px}
+.pip-fill{height:100%;background:linear-gradient(90deg,var(--gold-d),var(--gold));
+  border-radius:100px;transition:width .5s}
+
+/* ─── EMOJI PICKER ─── */
+.emoji-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.emoji-btn{width:32px;height:32px;border-radius:7px;background:var(--navy-2);
+  border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
+  font-size:1rem;cursor:pointer;transition:all .15s}
+.emoji-btn.sel,.emoji-btn:hover{background:rgba(201,168,76,.15);border-color:rgba(201,168,76,.5)}
+
+/* ─── ONBOARDING ─── */
+.onboard-step{display:none}
+.onboard-step.active{display:block;animation:fadeUp .4s cubic-bezier(.22,1,.36,1) both}
+.step-indicator{display:flex;gap:6px;justify-content:center;margin-bottom:2rem}
+.step-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s}
+.step-dot.active{background:var(--gold);transform:scale(1.3)}
+.step-dot.done{background:rgba(201,168,76,.5)}
+.step-title{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;
+  color:var(--gold-l);margin-bottom:.4rem;line-height:1.2}
+.step-sub{font-size:.85rem;color:var(--cream-2);margin-bottom:1.5rem;line-height:1.6}
+.option-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:1.25rem}
+.option-card{background:var(--navy-2);border:1px solid var(--border);border-radius:var(--r);
+  padding:.9rem;text-align:center;cursor:pointer;transition:all .2s}
+.option-card:hover,.option-card.sel{background:rgba(201,168,76,.1);border-color:rgba(201,168,76,.5)}
+.option-card.sel{box-shadow:0 0 16px rgba(201,168,76,.15)}
+.option-icon{font-size:1.5rem;margin-bottom:.4rem;display:block}
+.option-label{font-size:.82rem;color:var(--cream);font-weight:400}
+.toggle-row{display:flex;align-items:center;gap:12px;padding:.85rem;
+  background:var(--navy-2);border:1px solid var(--border);border-radius:var(--r);
+  cursor:pointer;transition:all .2s;margin-bottom:6px}
+.toggle-row:hover{border-color:rgba(201,168,76,.35)}
+.toggle-row.sel{border-color:rgba(201,168,76,.5);background:rgba(201,168,76,.07)}
+.toggle-icon{font-size:1.2rem;width:30px;text-align:center}
+.toggle-label{flex:1;font-size:.88rem;color:var(--cream)}
+.toggle-check{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(201,168,76,.3);
+  display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.toggle-row.sel .toggle-check{background:var(--gold);border-color:var(--gold)}
+.toggle-check-inner{display:none;color:var(--navy);font-size:10px;font-weight:700}
+.toggle-row.sel .toggle-check-inner{display:block}
+.date-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+
+/* ─── USER BAR ─── */
+.user-bar{display:flex;align-items:center;gap:10px;background:var(--navy-2);
+  border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;
+  margin-bottom:1.25rem;cursor:pointer;transition:background .15s}
+.user-bar:hover{background:var(--navy-3)}
+.ub-avatar{font-size:1.5rem}
+.ub-name{flex:1;font-size:.95rem;font-weight:500}
+.ub-switch{font-size:.72rem;color:var(--cream-2);letter-spacing:.04em}
+
+/* ─── ATTRACTION CARDS ─── */
+.attr-card{background:var(--navy-2);border:1px solid var(--border);border-radius:var(--r);
+  padding:1rem;margin-bottom:8px;cursor:pointer;transition:all .2s}
+.attr-card:hover{border-color:rgba(201,168,76,.4);background:var(--navy-3);
+  transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.attr-card-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:.35rem}
+.attr-name{font-size:.9rem;font-weight:500;color:var(--cream)}
+.attr-type{font-size:.67rem;padding:2px 8px;border-radius:100px;white-space:nowrap;flex-shrink:0}
+.type-ride{background:rgba(110,181,212,.15);border:1px solid rgba(110,181,212,.3);color:var(--blue)}
+.type-dine{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);color:var(--gold-l)}
+.type-exp{background:rgba(76,175,125,.12);border:1px solid rgba(76,175,125,.3);color:var(--green)}
+.type-shop{background:rgba(180,120,220,.12);border:1px solid rgba(180,120,220,.3);color:var(--purple)}
+.type-hotel{background:rgba(220,160,80,.12);border:1px solid rgba(220,160,80,.3);color:var(--orange)}
+.type-show{background:rgba(220,100,100,.12);border:1px solid rgba(220,100,100,.3);color:var(--red)}
+.type-land{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:var(--cream-2)}
+.attr-location{font-size:.71rem;color:var(--cream-2);margin-bottom:.4rem}
+.attr-desc-short{font-size:.8rem;color:var(--cream-2);line-height:1.55}
+.ready-badge{display:inline-flex;align-items:center;gap:4px;font-size:.7rem;
+  padding:3px 9px;border-radius:100px;margin-top:6px}
+.ready-yes{background:rgba(76,175,125,.15);border:1px solid rgba(76,175,125,.3);color:var(--green)}
+.ready-no{background:rgba(220,100,100,.1);border:1px solid rgba(220,100,100,.2);color:var(--red)}
+.ready-partial{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.25);color:var(--gold-l)}
+
+/* ─── DETAIL SCREEN ─── */
+.back-btn{display:flex;align-items:center;gap:7px;font-size:.8rem;color:var(--cream-2);
+  cursor:pointer;margin-bottom:1.5rem;transition:color .2s;border:none;background:none;padding:0}
+.back-btn:hover{color:var(--gold-l)}
+.detail-poster{width:100%;max-width:200px;border-radius:var(--r);
+  box-shadow:0 12px 40px rgba(0,0,0,.5);margin:0 auto .75rem;display:block;
+  border:1px solid var(--border)}
+.detail-poster-wrap{text-align:center;margin-bottom:1.25rem}
+.detail-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;
+  color:var(--gold-l);line-height:1.15;margin-bottom:.25rem}
+.detail-sub{font-size:.78rem;color:var(--cream-2);letter-spacing:.04em;margin-bottom:1rem}
+.detail-desc{font-size:.86rem;color:var(--cream-2);line-height:1.75;
+  border-top:1px solid var(--border);padding-top:1rem;margin-bottom:.75rem}
+.detail-spoiler{font-size:.78rem;color:rgba(201,168,76,.5);font-style:italic;margin-bottom:.75rem}
+.detail-link{display:inline-flex;align-items:center;gap:5px;font-size:.78rem;
+  color:var(--gold);border-bottom:1px solid rgba(201,168,76,.3);text-decoration:none;transition:.15s}
+.detail-link:hover{border-color:var(--gold)}
+.content-badge{display:inline-flex;align-items:center;gap:4px;font-size:.75rem;
+  background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);
+  border-radius:8px;padding:4px 10px;margin:3px;cursor:pointer;transition:all .2s;color:var(--gold-l)}
+.content-badge:hover{background:rgba(201,168,76,.18);border-color:rgba(201,168,76,.45)}
+.readiness-bar{display:flex;align-items:center;gap:8px;margin-top:6px}
+.readiness-segment{height:5px;flex:1;border-radius:100px}
+
+/* ─── FAMILY REPORT ─── */
+.family-overlap{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);
+  border-radius:var(--r2);padding:1.25rem;margin-bottom:1rem}
+.overlap-item{display:flex;align-items:center;gap:10px;padding:.6rem 0;
+  border-bottom:1px solid var(--border)}
+.overlap-item:last-child{border-bottom:none}
+.overlap-avatars{display:flex;gap:-4px}
+.overlap-avatar{font-size:1rem;background:var(--navy-3);border:1px solid var(--border);
+  border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center}
+.overlap-info{flex:1;min-width:0}
+.overlap-title{font-size:.85rem;color:var(--cream)}
+.overlap-who{font-size:.71rem;color:var(--cream-2);margin-top:2px}
+.overlap-count{background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);
+  border-radius:100px;font-size:.7rem;color:var(--gold-l);padding:2px 8px;white-space:nowrap}
+
+/* ─── SHARE CARD ─── */
+#share-canvas{display:none}
+.share-preview{background:linear-gradient(135deg,#0D1928 0%,#1A2B44 100%);border:1px solid var(--border);
+  border-radius:var(--r2);padding:1.5rem;margin-bottom:1rem}
+.share-header{display:flex;align-items:center;gap:10px;margin-bottom:1rem;
+  padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.share-name{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;color:var(--gold-l)}
+.share-sub{font-size:.75rem;color:var(--cream-2)}
+.share-wi{display:flex;align-items:center;gap:8px;padding:.4rem 0}
+.share-num{width:22px;height:22px;border-radius:50%;background:var(--gold);
+  display:flex;align-items:center;justify-content:center;font-size:.7rem;
+  font-weight:700;color:var(--navy);flex-shrink:0}
+.share-title{font-size:.82rem;color:var(--cream)}
+
+/* ─── WATCHLIST CUSTOMIZATION ─── */
+.wi-actions{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+.wi-action-btn{display:inline-flex;align-items:center;gap:3px;font-size:.68rem;
+  padding:2px 8px;border-radius:6px;border:1px solid;cursor:pointer;transition:all .15s;background:transparent}
+.wi-action-boost{border-color:rgba(201,168,76,.3);color:rgba(201,168,76,.7)}
+.wi-action-boost:hover{background:rgba(201,168,76,.12);color:var(--gold-l);border-color:rgba(201,168,76,.6)}
+.wi-action-drop{border-color:rgba(110,181,212,.25);color:rgba(110,181,212,.6)}
+.wi-action-drop:hover{background:rgba(110,181,212,.08);color:var(--blue);border-color:rgba(110,181,212,.5)}
+.wi-action-remove{border-color:rgba(220,100,100,.2);color:rgba(220,100,100,.5)}
+.wi-action-remove:hover{background:rgba(220,100,100,.08);color:var(--red);border-color:rgba(220,100,100,.4)}
+.wi-boosted .wi-num{background:var(--gold)!important;color:var(--navy)!important;border-color:var(--gold)!important}
+.wi-deprioritized{opacity:.6}
+.hidden-tray{margin-top:1rem}
+.hidden-tray-label{font-size:.7rem;color:var(--cream-3);letter-spacing:.06em;text-transform:uppercase;
+  margin-bottom:.4rem;cursor:pointer;display:flex;align-items:center;gap:5px}
+.hidden-item{display:flex;align-items:center;gap:10px;padding:.5rem .75rem;
+  background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);
+  border-radius:8px;margin-bottom:4px}
+.hidden-title{flex:1;font-size:.83rem;color:var(--cream-2)}
+.hidden-readd{font-size:.69rem;color:rgba(201,168,76,.6);cursor:pointer;border:1px solid rgba(201,168,76,.25);
+  border-radius:6px;padding:2px 8px;transition:all .15s}
+.hidden-readd:hover{color:var(--gold-l);border-color:rgba(201,168,76,.5);background:rgba(201,168,76,.08)}
+
+/* ─── COMPLETION BANNER ─── */
+.completion-banner{background:linear-gradient(135deg,rgba(76,175,125,.15),rgba(201,168,76,.1));
+  border:1px solid rgba(76,175,125,.4);border-radius:var(--r2);
+  padding:1.5rem;text-align:center;margin-bottom:1.5rem;animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both}
+.completion-banner .big-emoji{font-size:2.5rem;display:block;margin-bottom:.5rem}
+.completion-banner h3{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--gold-l);margin-bottom:.3rem}
+.completion-banner p{font-size:.82rem;color:var(--cream-2);line-height:1.6}
+
+/* ─── NOTE ─── */
+.note{background:rgba(255,255,255,.025);border-left:2px solid var(--gold);
+  border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:1.25rem;
+  font-size:.81rem;color:var(--cream-2);line-height:1.65}
+.note strong{color:var(--gold-l);font-weight:500}
+
+/* ─── MODAL OVERLAY ─── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;
+  display:none;align-items:center;justify-content:center;padding:1.25rem}
+.modal-overlay.open{display:flex;animation:fadeIn .25s ease both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-box{background:var(--navy-2);border:1px solid var(--border);border-radius:var(--r2);
+  padding:1.5rem;max-width:420px;width:100%;animation:popIn .3s cubic-bezier(.34,1.56,.64,1) both}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--gold-l);
+  margin-bottom:.5rem}
+.modal-actions{display:flex;gap:8px;margin-top:1.25rem}
+
+/* ─── SEASONAL BANNER ─── */
+.seasonal-banner{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);
+  border-radius:var(--r);padding:.75rem 1rem;margin-bottom:1.25rem;
+  display:flex;align-items:center;gap:10px;font-size:.8rem;color:var(--cream-2)}
+.seasonal-banner strong{color:var(--gold-l)}
+
+/* ─── MISC ─── */
+.divider{height:1px;background:var(--border);margin:1.5rem 0}
+.flex-row{display:flex;gap:8px;align-items:center}
+.flex-1{flex:1}
+.text-center{text-align:center}
+.mt-1{margin-top:.5rem}.mt-2{margin-top:1rem}.mt-3{margin-top:1.5rem}
+.empty-state{text-align:center;padding:2rem 1rem;font-size:.85rem;color:var(--cream-3);font-style:italic}
+.chip{display:inline-block;font-size:.7rem;padding:2px 9px;border-radius:100px;
+  background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--cream-2);margin:2px}
+</style>
+</head>
+<body>
+
+<div id="stars"></div>
+<div id="glow-top"></div>
+
+<div class="wrap">
+<header>
+  <span class="castle">🏰</span>
+  <h1 class="logo">Disneyland</h1>
+  <p class="logo-sub">Family Prep Tracker</p>
+  <div class="trip-pill" id="header-pill">✦ Disneyland Resort, Anaheim CA</div>
+</header>
+
+<!-- ══════════════════════════════════════
+     SCREEN: HOME / PROFILE SELECT
+══════════════════════════════════════ -->
+<div id="screen-home" class="screen active">
+  <div class="serif" style="font-size:1.2rem;color:var(--gold-l);text-align:center;margin-bottom:1.25rem;font-style:italic">Who's watching?</div>
+  <div class="profiles-grid" id="profiles-grid"></div>
+  <div style="display:flex;gap:8px;margin-bottom:1.5rem">
+    <button class="btn btn-gold flex-1" onclick="openAddModal()">＋ Add Member</button>
+    <button class="btn btn-ghost" onclick="openFamilyReport()" id="family-btn" style="display:none">👨‍👩‍👧 Family Report</button>
+  </div>
+  <div class="note" id="home-note" style="display:none">
+    <strong>Family mode active.</strong> Each member tracks individually. Tap "Family Report" to see shared watchlist priorities.
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN: ONBOARDING WIZARD
+══════════════════════════════════════ -->
+<div id="screen-onboard" class="screen">
+  <div class="step-indicator" id="step-dots"></div>
+
+  <!-- Step 1: Individual or Family -->
+  <div class="onboard-step" id="step-0">
+    <button class="back-btn" onclick="goHome()" style="margin-bottom:1.25rem">← Back to home</button>
+    <div class="step-title">Is this just for you, or the whole family?</div>
+    <div class="step-sub">We'll tailor your experience accordingly.</div>
+    <div class="option-grid">
+      <div class="option-card" id="opt-solo" onclick="selectMode('solo')">
+        <span class="option-icon">🧑</span>
+        <div class="option-label">Just me</div>
+      </div>
+      <div class="option-card" id="opt-family" onclick="selectMode('family')">
+        <span class="option-icon">👨‍👩‍👧</span>
+        <div class="option-label">Family / Group</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: Name & Avatar -->
+  <div class="onboard-step" id="step-1">
+    <button class="back-btn" onclick="obGoToStep(0)" style="margin-bottom:1.25rem">← Back</button>
+    <div class="step-title">What's your name?</div>
+    <div class="step-sub">This is how we'll label your personal watchlist.</div>
+    <div class="emoji-row" id="ob-emoji-row"></div>
+    <label class="field-label">Your name</label>
+    <input type="text" id="ob-name" placeholder="e.g. Alex" maxlength="20" style="margin-bottom:1rem">
+    <button class="btn btn-solid btn-block" onclick="obNext()">Continue →</button>
+  </div>
+
+  <!-- Step 3: Trip dates -->
+  <div class="onboard-step" id="step-2">
+    <button class="back-btn" onclick="obGoToStep(1)" style="margin-bottom:1.25rem">← Back</button>
+    <div class="step-title">When are you going?</div>
+    <div class="step-sub">We'll use your dates to surface seasonal events and confirm which attractions are open during your visit. You can always update this later.</div>
+    <div class="date-row">
+      <div>
+        <label class="field-label">Arrival date</label>
+        <input type="date" id="ob-date-from">
+      </div>
+      <div>
+        <label class="field-label">Departure date</label>
+        <input type="date" id="ob-date-to">
+      </div>
+    </div>
+    <div id="date-flags" style="margin-bottom:1rem"></div>
+    <button class="btn btn-solid btn-block" onclick="obNext()">Continue →</button>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+      <button class="btn btn-ghost" onclick="obSetMode('planning')">🗓 Still planning</button>
+      <button class="btn btn-ghost" onclick="obSetMode('browsing')">✨ Just browsing</button>
+    </div>
+    <div style="font-size:.72rem;color:var(--cream-3);text-align:center;margin-top:.5rem">
+      "Still planning" and "Just browsing" skip the date step and show all content
+    </div>
+  </div>
+
+  <!-- Step 4: Which venues -->
+  <div class="onboard-step" id="step-3">
+    <button class="back-btn" onclick="obGoToStep(2)" style="margin-bottom:1.25rem">← Back</button>
+    <div class="step-title">Which parts of the resort are you visiting?</div>
+    <div class="step-sub">We'll filter your survey to only show content relevant to where you're going.</div>
+    <div id="venue-options"></div>
+    <button class="btn btn-solid btn-block mt-2" onclick="obNext()">Continue →</button>
+  </div>
+
+  <!-- Step 5: Watchlist survey -->
+  <div class="onboard-step" id="step-4">
+    <button class="back-btn" onclick="obGoToStep(3)" style="margin-bottom:1.25rem">← Back</button>
+    <div class="step-title">What have you seen?</div>
+    <div class="step-sub">Check off everything you've already watched. We'll build your personalized watchlist from what's left.</div>
+    <div id="ob-survey"></div>
+    <button class="btn btn-solid btn-block mt-2" onclick="finishOnboarding()">Build my watchlist ✨</button>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN: MAIN APP
+══════════════════════════════════════ -->
+<div id="screen-main" class="screen">
+  <div class="user-bar" onclick="goHome()">
+    <span class="ub-avatar" id="ub-avatar"></span>
+    <span class="ub-name" id="ub-name"></span>
+    <span class="ub-switch">switch ›</span>
+  </div>
+
+  <div id="trip-banner" style="margin-bottom:1rem;display:none"></div>
+  <div id="seasonal-banners"></div>
+
+  <div class="stats-row">
+    <div class="stat-box"><span class="stat-n" id="s-seen">0</span><span class="stat-l">Seen</span></div>
+    <div class="stat-box"><span class="stat-n" id="s-left">0</span><span class="stat-l">To Watch</span></div>
+    <div class="stat-box"><span class="stat-n" id="s-pct">0%</span><span class="stat-l">Ready</span></div>
+  </div>
+  <div style="margin-bottom:1.5rem">
+    <div style="display:flex;justify-content:space-between;font-size:.73rem;color:var(--cream-2);margin-bottom:5px">
+      <span>Park coverage</span><span id="prog-pct">0%</span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab(event,'watchlist')">🎬 Watchlist</button>
+    <button class="tab-btn" onclick="switchTab(event,'checklist')">✓ Full List</button>
+    <button class="tab-btn" onclick="switchTab(event,'attractions')">🎡 Attractions</button>
+  </div>
+
+  <!-- TAB: WATCHLIST -->
+  <div class="tab-pane active" id="tab-watchlist">
+    <div class="note">Your personalized list, based on what you've seen and where you're going. Tap any attraction pill to dive deeper. Mark items watched as you go.</div>
+    <div id="watchlist-items"></div>
+    <div style="margin-top:1.5rem">
+      <button class="btn btn-gold btn-block" onclick="openShareModal()">📤 Share My Watchlist</button>
+    </div>
+  </div>
+
+  <!-- TAB: CHECKLIST -->
+  <div class="tab-pane" id="tab-checklist">
+    <div class="note">Your full content checklist. Tap any attraction link to see what's waiting for you at the park.</div>
+    <div id="checklist-items"></div>
+    <div class="divider"></div>
+    <button class="btn btn-danger btn-block" onclick="deleteCurrentUser()">Remove my profile</button>
+  </div>
+
+  <!-- TAB: ATTRACTIONS -->
+  <div class="tab-pane" id="tab-attractions">
+    <div class="note">Every IP-connected attraction, restaurant, and experience at the resort. Your readiness score updates as you check off content.</div>
+    <div id="attractions-list"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN: CONTENT DETAIL
+══════════════════════════════════════ -->
+<div id="screen-content" class="screen">
+  <button class="back-btn" onclick="goBack()">← Back</button>
+  <div id="content-detail-body"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN: ATTRACTION DETAIL
+══════════════════════════════════════ -->
+<div id="screen-attraction" class="screen">
+  <button class="back-btn" onclick="goBack()">← Back</button>
+  <div id="attraction-detail-body"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN: FAMILY REPORT
+══════════════════════════════════════ -->
+<div id="screen-family" class="screen">
+  <button class="back-btn" onclick="goBack()">← Back</button>
+  <div class="serif" style="font-size:1.8rem;color:var(--gold-l);margin-bottom:.25rem">Family Movie Night</div>
+  <p style="font-size:.83rem;color:var(--cream-2);margin-bottom:1.5rem">Prioritized by how many family members still need to watch each title. Watch together first, then solo.</p>
+  <div id="family-report-body"></div>
+</div>
+</div><!-- /.wrap -->
+
+<!-- ══════════════════════════════════════ MODALS ══════════════════════════════════════ -->
+
+<!-- Add / Edit User Modal -->
+<div class="modal-overlay" id="modal-user">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-user-title">Add Family Member</div>
+    <div class="emoji-row" id="modal-emoji-row"></div>
+    <label class="field-label mt-1">Name</label>
+    <input type="text" id="modal-name" placeholder="Family member's name" maxlength="20" style="margin-bottom:.75rem">
+    <div class="modal-actions">
+      <button class="btn btn-solid flex-1" onclick="saveUser()">Save</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-user')">Cancel</button>
+    </div>
+    <button class="btn btn-danger btn-block" id="modal-delete-btn" onclick="deleteModalUser()" style="display:none">Delete Profile</button>
+  </div>
+</div>
+
+<!-- Share Modal -->
+<div class="modal-overlay" id="modal-share">
+  <div class="modal-box" style="max-width:480px">
+    <div class="modal-title">Share My Watchlist</div>
+    <div class="share-preview" id="share-preview"></div>
+    <div class="modal-actions">
+      <button class="btn btn-solid flex-1" onclick="downloadShareCard()">💾 Save Image</button>
+      <button class="btn btn-gold flex-1" onclick="shareViaText()">💬 iMessage</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-share')">Close</button>
+    </div>
+  </div>
+</div>
+
+<canvas id="share-canvas" style="display:none"></canvas>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════════
+
+const CONTENT = {
+  // Star Wars
+  'sw-anh':    {id:'sw-anh',    title:'Star Wars: A New Hope',          year:1977, type:'film',    runtime:'2h 5m',  emoji:'⚔️', group:'Star Wars',
+    poster:'https://image.tmdb.org/t/p/w300/6FfCtAuVAW8XJjZ7eWeLibRLWTw.jpg',
+    desc:'The original. The Rebel Alliance battles the Empire to destroy the Death Star. This film established the galaxy far, far away — and Oga\'s Cantina is modeled directly on the Mos Eisley cantina from this film.',
+    venues:['disneyland'], attractions:['galaxys-edge','rise-resistance','ogas','milk-stand','savis']},
+  'sw-esb':    {id:'sw-esb',    title:'The Empire Strikes Back',        year:1980, type:'film',    runtime:'2h 4m',  emoji:'⚔️', group:'Star Wars',
+    poster:'https://image.tmdb.org/t/p/w300/2l05cFWJacyIsTpsqSgH0wQXe4V.jpg',
+    desc:'The saga deepens. Cloud City, Yoda, and the galaxy\'s most famous plot twist. Original trilogy characters now appear in Galaxy\'s Edge from April 29, 2026.',
+    venues:['disneyland'], attractions:['galaxys-edge','rise-resistance']},
+  'sw-rotj':   {id:'sw-rotj',   title:'Return of the Jedi',             year:1983, type:'film',    runtime:'2h 11m', emoji:'⚔️', group:'Star Wars',
+    poster:'https://image.tmdb.org/t/p/w300/jYEW5xZkZk2WTrdbMGAPFuBqbDc.jpg',
+    desc:'The Rebellion\'s final battle. Endor, the second Death Star. Han Solo is now a mission destination in the updated Smugglers Run.',
+    venues:['disneyland'], attractions:['galaxys-edge','mf-smugglers']},
+  'sw-tfa':    {id:'sw-tfa',    title:'The Force Awakens',              year:2015, type:'film',    runtime:'2h 18m', emoji:'⚔️', group:'Star Wars',
+    poster:'https://image.tmdb.org/t/p/w300/wqnLdwVXoBjKibFRR5U3y0aDUhs.jpg',
+    desc:'The sequel era begins. Rise of the Resistance is set in this era — Kylo Ren, Rey, and Finn feature prominently.',
+    venues:['disneyland'], attractions:['rise-resistance']},
+  'sw-rogue':  {id:'sw-rogue',  title:'Rogue One',                      year:2016, type:'film',    runtime:'2h 13m', emoji:'⚔️', group:'Star Wars',
+    poster:'https://image.tmdb.org/t/p/w300/i0yw1mFbB7sNGHCs7EXZPzFkdA1.jpg',
+    desc:'A standalone story about stealing the Death Star plans. Background lore throughout Galaxy\'s Edge.',
+    venues:['disneyland'], attractions:['galaxys-edge']},
+  'mando-s1':  {id:'mando-s1',  title:'The Mandalorian — Season 1',     year:2019, type:'show',   runtime:'~5h',    emoji:'🪖', group:'Star Wars',
+    poster:'https://image.tmdb.org/t/p/w300/sWgBv7LV2reenceBiGFjl8njsOo.jpg',
+    desc:'Din Djarin and Grogu. The Mandalorian and Grogu storyline is now the core of Millennium Falcon: Smugglers Run (from May 22, 2026). Engineers protect Grogu during the mission. Season 1 is all you need.',
+    venues:['disneyland'], attractions:['mf-smugglers','ogas','savis'], priority:true,
+    spoiler:'The ride reveals no plot from the show — but knowing who they are makes the briefing and mission land emotionally.'},
+  'mando-s2':  {id:'mando-s2',  title:'The Mandalorian — Season 2',     year:2020, type:'show',   runtime:'~5h',    emoji:'🪖', group:'Star Wars',
+    poster:'https://image.tmdb.org/t/p/w300/sWgBv7LV2reenceBiGFjl8njsOo.jpg',
+    desc:'Optional — Season 1 covers everything needed for the ride. Watch if you want more Mando & Grogu context.',
+    venues:['disneyland'], attractions:['mf-smugglers']},
+  'mando-s3':  {id:'mando-s3',  title:'The Mandalorian — Season 3',     year:2023, type:'show',   runtime:'~5h',    emoji:'🪖', group:'Star Wars',
+    poster:'https://image.tmdb.org/t/p/w300/sWgBv7LV2reenceBiGFjl8njsOo.jpg',
+    desc:'Optional. Low additional park payoff.',
+    venues:['disneyland'], attractions:['mf-smugglers']},
+  // Cars
+  'cars-1':    {id:'cars-1',    title:'Cars',                           year:2006, type:'film',    runtime:'1h 57m', emoji:'🚗', group:'Cars Land',
+    poster:'https://image.tmdb.org/t/p/w300/1evFHMExMkABqBaRgj5lDq7rGSW.jpg',
+    desc:'Lightning McQueen, Mater, and Radiator Springs. The entire Cars Land is a replica of the town from this film. Radiator Springs Racers is one of the best rides at any Disney park — this film makes it feel like stepping inside the movie.',
+    venues:['dca'], attractions:['radiator-springs','flos','cars-land']},
+  'cars-2':    {id:'cars-2',    title:'Cars 2',                         year:2011, type:'film',    runtime:'1h 46m', emoji:'🚗', group:'Cars Land',
+    poster:'https://image.tmdb.org/t/p/w300/6MSlPOBDa0N1j7KXNbfgGwI5OBG.jpg',
+    desc:'Low park payoff — ambient presence only.',
+    venues:['dca'], attractions:['cars-land']},
+  'cars-3':    {id:'cars-3',    title:'Cars 3',                         year:2017, type:'film',    runtime:'1h 42m', emoji:'🚗', group:'Cars Land',
+    poster:'https://image.tmdb.org/t/p/w300/lyVelGjFxEOQaFvtiALlvPZgN4.jpg',
+    desc:'Low park payoff — ambient presence only.',
+    venues:['dca'], attractions:['cars-land']},
+  // Marvel
+  'iron-man':  {id:'iron-man',  title:'Iron Man',                       year:2008, type:'film',    runtime:'2h 6m',  emoji:'🦾', group:'Avengers Campus',
+    poster:'https://image.tmdb.org/t/p/w300/78lPtwv72eTNqFW9COBYI0dWDJa.jpg',
+    desc:'Where it all began. Stark tech is the foundation of Avengers Campus — every building, every detail references Stark Industries.',
+    venues:['dca'], attractions:['avengers-campus']},
+  'guardians': {id:'guardians', title:'Guardians of the Galaxy',        year:2014, type:'film',    runtime:'2h 1m',  emoji:'🚀', group:'Avengers Campus',
+    poster:'https://image.tmdb.org/t/p/w300/r7vmZjnlkEQjqKPe8AmMbD2VbXj.jpg',
+    desc:'Rocket, Groot, Star-Lord, Gamora, Drax. Mission: BREAKOUT! is built entirely around this film — knowing the Guardians makes every joke and scenario land.',
+    venues:['dca'], attractions:['mission-breakout','avengers-campus']},
+  'dr-strange':{id:'dr-strange',title:'Doctor Strange',                 year:2016, type:'film',    runtime:'1h 55m', emoji:'🔮', group:'Avengers Campus',
+    poster:'https://image.tmdb.org/t/p/w300/uGBVAntoine7OLGVOxeZl5YGRsit.jpg',
+    desc:'Doctor Strange performs live sanctum shows multiple times daily in Avengers Campus courtyard.',
+    venues:['dca'], attractions:['avengers-campus']},
+  'black-pan': {id:'black-pan', title:'Black Panther',                  year:2018, type:'film',    runtime:'2h 14m', emoji:'🐾', group:'Avengers Campus',
+    poster:'https://image.tmdb.org/t/p/w300/uxzzxijgPIY7slzFvMotPv8wjKA.jpg',
+    desc:'Wakanda Forever. Character appearances throughout Avengers Campus.',
+    venues:['dca'], attractions:['avengers-campus']},
+  'iw':        {id:'iw',        title:'Avengers: Infinity War',         year:2018, type:'film',    runtime:'2h 29m', emoji:'💎', group:'Avengers Campus',
+    poster:'https://image.tmdb.org/t/p/w300/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg',
+    desc:'The stakes of the campus storyline. Context for why the Avengers are assembled.',
+    venues:['dca'], attractions:['avengers-campus']},
+  'endgame':   {id:'endgame',   title:'Avengers: Endgame',             year:2019, type:'film',    runtime:'3h 2m',  emoji:'💎', group:'Avengers Campus',
+    poster:'https://image.tmdb.org/t/p/w300/or06FN3Dka5tukK1e9sl16pB3iy.jpg',
+    desc:'The culmination. The campus is positioned post-Endgame — all character encounters reference this shared history.',
+    venues:['dca'], attractions:['avengers-campus']},
+  'spidey':    {id:'spidey',    title:'Spider-Man: No Way Home',        year:2021, type:'film',    runtime:'2h 28m', emoji:'🕷️', group:'Avengers Campus',
+    poster:'https://image.tmdb.org/t/p/w300/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg',
+    desc:'WEB Slingers is built around this film\'s Avengers Campus setting. Spider-Man swings overhead multiple times daily — knowing him makes every encounter better.',
+    venues:['dca'], attractions:['web-slingers','avengers-campus'], priority:true},
+  // Pixar
+  'inside-out-1':{id:'inside-out-1',title:'Inside Out',                year:2015, type:'film',    runtime:'1h 35m', emoji:'😊', group:'Pixar',
+    poster:'https://image.tmdb.org/t/p/w300/aej3LRUga5rhgkmRP6oOrchv0pC.jpg',
+    desc:'Joy, Sadness, Fear, Anger, Disgust — required context for the new ride and sequel.',
+    venues:['dca'], attractions:['inside-out-whirlwind','lamplight']},
+  'inside-out-2':{id:'inside-out-2',title:'Inside Out 2',              year:2024, type:'film',    runtime:'1h 40m', emoji:'😤', group:'Pixar',
+    poster:'https://image.tmdb.org/t/p/w300/oxxkB8ksRJmGBroV6AVNM8RFBrK.jpg',
+    desc:'The brand-new ride is built around this sequel. New emotions (Anxiety, Envy, Ennui, Embarrassment, Nostalgia) all feature. Watch this fresh before you go.',
+    venues:['dca'], attractions:['inside-out-whirlwind','lamplight'], priority:true},
+  'toy-story-1':{id:'toy-story-1',title:'Toy Story',                   year:1995, type:'film',    runtime:'1h 21m', emoji:'🤠', group:'Pixar',
+    poster:'https://image.tmdb.org/t/p/w300/uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg',
+    desc:'The one that started Pixar. Toy Story Midway Mania uses these characters throughout.',
+    venues:['dca'], attractions:['toy-story-mania','lamplight']},
+  'toy-story-2':{id:'toy-story-2',title:'Toy Story 2',                 year:1999, type:'film',    runtime:'1h 32m', emoji:'🤠', group:'Pixar',
+    poster:'https://image.tmdb.org/t/p/w300/qMzgF2uTpMCFJtKBlnFVB2hNiOZ.jpg',
+    desc:'Ambient presence in the land.',
+    venues:['dca'], attractions:['lamplight']},
+  'toy-story-3':{id:'toy-story-3',title:'Toy Story 3',                 year:2010, type:'film',    runtime:'1h 43m', emoji:'🤠', group:'Pixar',
+    poster:'https://image.tmdb.org/t/p/w300/xjjO3JIdnB6YdLBpbxeyCBFd4Qa.jpg',
+    desc:'Ambient presence in the land.',
+    venues:['dca'], attractions:['lamplight']},
+  'incredibles':{id:'incredibles',title:'The Incredibles',              year:2004, type:'film',    runtime:'1h 55m', emoji:'🦸', group:'Pixar',
+    poster:'https://image.tmdb.org/t/p/w300/2LqaLgk4Z226KkgPJuiOQ58ShKD.jpg',
+    desc:'The Parr family. Incredicoaster is themed around Jack-Jack\'s powers going haywire — scenes are funnier if you know the characters.',
+    venues:['dca'], attractions:['incredicoaster','lamplight']},
+  'coco':      {id:'coco',      title:'Coco',                           year:2017, type:'film',    runtime:'1h 45m', emoji:'💀', group:'Pixar',
+    poster:'https://image.tmdb.org/t/p/w300/gGEsBPAijhVUFoiNpgZXqRVWJt2.jpg',
+    desc:'Miguel and the Land of the Dead. A new Coco ride is in development for DCA. Strong character presence and cultural theming throughout the resort.',
+    venues:['dca'], attractions:['lamplight']},
+  'monsters':  {id:'monsters',  title:'Monsters, Inc.',                 year:2001, type:'film',    runtime:'1h 32m', emoji:'👾', group:'Pixar',
+    poster:'https://image.tmdb.org/t/p/w300/a6uIXpSBepznyMqkAz9EGkb8OkQ.jpg',
+    desc:'Mike & Sulley to the Rescue (DCA) — a slow dark ride through the film\'s world.',
+    venues:['dca'], attractions:[]},
+  'nemo':      {id:'nemo',      title:'Finding Nemo',                   year:2003, type:'film',    runtime:'1h 40m', emoji:'🐠', group:'Pixar',
+    poster:'https://image.tmdb.org/t/p/w300/2o9hBEVsrppKz7EbTgHF4NIwqCh.jpg',
+    desc:'Finding Nemo Submarine Voyage (Disneyland) — you descend beneath the lagoon and find Nemo.',
+    venues:['disneyland'], attractions:[]},
+  'up':        {id:'up',        title:'Up',                             year:2009, type:'film',    runtime:'1h 36m', emoji:'🎈', group:'Pixar',
+    poster:'https://image.tmdb.org/t/p/w300/65w3Oo5EChpbmNTBGPfEJCxqLkM.jpg',
+    desc:'Russell and Dug character appearances throughout DCA. The film\'s emotional power doesn\'t require a park visit — but it adds warmth to character encounters.',
+    venues:['dca'], attractions:['lamplight']},
+  // Classic Disney
+  'princess-frog':{id:'princess-frog',title:'The Princess and the Frog',year:2009, type:'film',  runtime:'1h 37m', emoji:'🐸', group:'Classic Disney',
+    poster:'https://image.tmdb.org/t/p/w300/yXJeZKpRiOVz7FZEYJl50Hdo2v.jpg',
+    desc:'Tiana\'s Bayou Adventure is the reimagined Splash Mountain — set after the film\'s ending, preparing for the first Mardi Gras performance. Original songs and Audio-Animatronics.',
+    venues:['disneyland'], attractions:['tianas']},
+  'raiders':   {id:'raiders',   title:'Raiders of the Lost Ark',        year:1981, type:'film',    runtime:'1h 55m', emoji:'🎩', group:'Classic Disney',
+    poster:'https://image.tmdb.org/t/p/w300/ooqZqzT2bmqHkQKRMgMT2Oa5mwX.jpg',
+    desc:'The Indiana Jones Adventure queue is one of the most elaborately designed in any Disney park — packed with film references, hieroglyphs, animatronic snakes, and Indy\'s camp. Rewatch this before going.',
+    venues:['disneyland'], attractions:['indy'], priority:true,
+    rewatch:true},
+  'sleeping-beauty':{id:'sleeping-beauty',title:'Sleeping Beauty',      year:1959, type:'film',    runtime:'1h 15m', emoji:'👸', group:'Classic Disney',
+    poster:'https://image.tmdb.org/t/p/w300/vIChr5Vnhfx8q2H1bGJSgefAoCe.jpg',
+    desc:'The castle\'s walkthrough experience is themed around this film. The Broken Spell Lounge at the Disneyland Hotel has a new Sleeping Beauty theme.',
+    venues:['disneyland','hotel'], attractions:['castle-walkthrough','broken-spell']},
+  'peter-pan': {id:'peter-pan', title:'Peter Pan',                      year:1953, type:'film',    runtime:'1h 17m', emoji:'🧚', group:'Classic Disney',
+    poster:'https://image.tmdb.org/t/p/w300/lVHHcRqZHcnEzqQODSL4d6vSdJi.jpg',
+    desc:'Peter Pan\'s Flight — a classic Fantasyland dark ride. You fly over Neverland. One of the most charming original rides at the park.',
+    venues:['disneyland'], attractions:[]},
+  'jungle-book':{id:'jungle-book',title:'The Jungle Book',              year:1967, type:'film',    runtime:'1h 18m', emoji:'🐻', group:'Classic Disney',
+    poster:'https://image.tmdb.org/t/p/w300/vIDHn7dNGJqVcE4eTmmfvN0v8bR.jpg',
+    desc:'Jungle Cruise theming. Cast member skippers reference the animals and the world throughout the ride.',
+    venues:['disneyland'], attractions:[]},
+  'nbc':       {id:'nbc',       title:'The Nightmare Before Christmas',  year:1993, type:'film',    runtime:'1h 16m', emoji:'🎃', group:'Classic Disney',
+    poster:'https://image.tmdb.org/t/p/w300/rAn5M4fEJGNJTFWJp3VbSM0fUDq.jpg',
+    desc:'Haunted Mansion Holiday overlay — active Halloween (mid-Aug through Oct 31) and Christmas (mid-Nov through early Jan) seasons only. Not applicable to a May visit.',
+    venues:['disneyland'], attractions:[], seasonal:true,
+    seasonalWindow:'halloween,christmas'},
+  'little-mermaid':{id:'little-mermaid',title:'The Little Mermaid',    year:1989, type:'film',    runtime:'1h 23m', emoji:'🧜', group:'Classic Disney',
+    poster:'https://image.tmdb.org/t/p/w300/xbs6a00M9ZoXtBDtCBqXHmLCnGe.jpg',
+    desc:'Ariel\'s Undersea Adventure (DCA) — a slow dark ride through the film\'s world.',
+    venues:['dca'], attractions:[]},
+};
+
+const ATTRACTIONS = {
+  'galaxys-edge':{id:'galaxys-edge',emoji:'🌌',name:"Galaxy's Edge",type:'Land',typeClass:'type-land',
+    location:"Disneyland Park — Far end of park",
+    desc:"An entire planet — Batuu, Black Spire Outpost. From April 29, 2026, original trilogy characters (Luke, Leia, Han, Vader with Stormtroopers) patrol the land alongside sequel-era characters. John Williams' classic score plays in outdoor areas. The most immersive land Disney has ever built.",
+    content:['sw-anh','sw-esb','sw-rotj','sw-tfa','sw-rogue','mando-s1'],
+    url:'https://disneyland.disney.go.com/destinations/disneyland/star-wars-galaxys-edge/'},
+  'rise-resistance':{id:'rise-resistance',emoji:'🎢',name:"Rise of the Resistance",type:'Ride',typeClass:'type-ride',
+    location:"Disneyland Park — Galaxy's Edge",
+    desc:"Often called the best ride at Disneyland Resort. Multi-system: you're captured by the First Order and must escape. Enormous practical sets, cutting-edge Audio-Animatronics, and multiple ride vehicles. Use Lightning Lane — standby lines can exceed 90 minutes.",
+    content:['sw-anh','sw-esb','sw-tfa'],
+    url:'https://disneyland.disney.go.com/attractions/disneyland/star-wars-rise-of-the-resistance/'},
+  'mf-smugglers':{id:'mf-smugglers',emoji:'🎢',name:"Millennium Falcon: Smugglers Run",type:'Ride',typeClass:'type-ride',
+    location:"Disneyland Park — Galaxy's Edge",
+    desc:"You pilot the Millennium Falcon. As of May 22, 2026: Din Djarin and Grogu lead the mission — your crew tracks down ex-Imperial officers on Tatooine, choosing between Bespin, Endor, or Coruscant. Engineers now protect Grogu. Upgraded cockpit rendering.",
+    content:['sw-anh','sw-rotj','mando-s1'],
+    url:'https://disneyland.disney.go.com/attractions/disneyland/millennium-falcon-smugglers-run/'},
+  'ogas':{id:'ogas',emoji:'🍺',name:"Oga's Cantina",type:'Dining',typeClass:'type-dine',
+    location:"Disneyland Park — Galaxy's Edge",
+    desc:"The only bar inside Disneyland Park. Walk-up only (no reservations). Themed as the Mos Eisley-style cantina of Black Spire Outpost. Droid DJ R-3X spins. Blue Milk cocktail, Jedi Mind Trick, Bad Motivator IPA. Mostly standing room, 45-min limit. Loud, dark, and fantastic.",
+    content:['sw-anh','mando-s1'],
+    url:'https://disneyland.disney.go.com/dining/disneyland/ogas-cantina/'},
+  'milk-stand':{id:'milk-stand',emoji:'🥛',name:"Milk Stand",type:'Dining',typeClass:'type-dine',
+    location:"Disneyland Park — Galaxy's Edge",
+    desc:"Blue Milk (berry/coconut, frozen) and Green Milk (tropical, frozen) — the iconic drinks from the films. Mobile-orderable. Best enjoyed while wandering the land.",
+    content:['sw-anh'],
+    url:'https://disneyland.disney.go.com/dining/disneyland/milk-stand/'},
+  'savis':{id:'savis',emoji:'⚔️',name:"Savi's Workshop — Handbuilt Lightsabers",type:'Experience',typeClass:'type-exp',
+    location:"Disneyland Park — Galaxy's Edge",
+    desc:"Fully immersive, ticketed experience ($249.99+tax). Choose a theme (Peace & Justice, Power & Control, Elemental Nature, Protection & Defense), build your lightsaber in a ceremony, and leave with it in a carrying case. Requires reservation — book far in advance via the Disneyland app.",
+    content:['sw-anh','mando-s1'],
+    url:'https://disneyland.disney.go.com/shops/disneyland/savis-workshop-handbuilt-lightsabers/'},
+  'inside-out-whirlwind':{id:'inside-out-whirlwind',emoji:'🎢',name:"Inside Out Emotional Whirlwind",type:'Ride',typeClass:'type-ride',
+    location:"Disney California Adventure — Pixar Pier",
+    desc:"New spinning dark ride on Pixar Pier. You ride through Riley's Headquarters encountering Joy, Sadness, Fear, Anger, Disgust, and all new emotions from Inside Out 2 (Anxiety, Envy, Ennui, Embarrassment, Nostalgia). Best experienced after watching both films.",
+    content:['inside-out-1','inside-out-2'],
+    url:'https://disneyland.disney.go.com/attractions/disney-california-adventure/inside-out-emotional-whirlwind/'},
+  'lamplight':{id:'lamplight',emoji:'🍽',name:"Lamplight Lounge",type:'Dining',typeClass:'type-dine',
+    location:"Disney California Adventure — Pixar Pier",
+    desc:"One of the best restaurants at the resort. The interior is packed with original Pixar production art and storyboards from every film. California-inspired gastropub menu. Overlooks Pixar Pier and Paradise Bay. Breakfast available. Reservations strongly recommended.",
+    content:['inside-out-1','inside-out-2','toy-story-1','incredibles','coco','up'],
+    url:'https://disneyland.disney.go.com/dining/disney-california-adventure/lamplight-lounge/'},
+  'radiator-springs':{id:'radiator-springs',emoji:'🎢',name:"Radiator Springs Racers",type:'Ride',typeClass:'type-ride',
+    location:"Disney California Adventure — Cars Land",
+    desc:"Widely considered one of the best rides in any Disney park. You ride through the town of Radiator Springs, meet the characters, and race another vehicle in the finale. Cars Land is a near-perfect replica of the film's setting. Use Lightning Lane — this has the longest waits in DCA.",
+    content:['cars-1'],
+    url:'https://disneyland.disney.go.com/attractions/disney-california-adventure/radiator-springs-racers/'},
+  'flos':{id:'flos',emoji:'🍽',name:"Flo's V8 Café",type:'Dining',typeClass:'type-dine',
+    location:"Disney California Adventure — Cars Land",
+    desc:"Quick-service dining styled as Flo's roadside diner from the film. American comfort food (burgers, salads, sandwiches). Best quick-service option in the area.",
+    content:['cars-1'],
+    url:'https://disneyland.disney.go.com/dining/disney-california-adventure/flos-v8-cafe/'},
+  'cars-land':{id:'cars-land',emoji:'🚗',name:"Cars Land",type:'Land',typeClass:'type-land',
+    location:"Disney California Adventure",
+    desc:"A full replica of Radiator Springs from the Cars films. Neon-lit at night for a stunning Route 66 atmosphere. The whole land rewards having seen Cars (2006).",
+    content:['cars-1','cars-2','cars-3'],
+    url:'https://disneyland.disney.go.com/destinations/disney-california-adventure/cars-land/'},
+  'avengers-campus':{id:'avengers-campus',emoji:'🦸',name:"Avengers Campus",type:'Land',typeClass:'type-land',
+    location:"Disney California Adventure",
+    desc:"A Stark facility turned Avengers headquarters. Doctor Strange performs live in the courtyard. Spider-Man swings overhead multiple times daily. Black Panther, Iron Man, Captain America, and others make appearances. Cast members stay in character and reference MCU events.",
+    content:['iron-man','guardians','dr-strange','black-pan','iw','endgame','spidey'],
+    url:'https://disneyland.disney.go.com/destinations/disney-california-adventure/avengers-campus/'},
+  'mission-breakout':{id:'mission-breakout',emoji:'🎢',name:"Guardians of the Galaxy — Mission: BREAKOUT!",type:'Ride',typeClass:'type-ride',
+    location:"Disney California Adventure — Avengers Campus",
+    desc:"A drop tower where you help the Guardians escape the Collector's collection. Multiple ride variations cycle through different Guardians songs. Knowing Rocket and the Guardians makes the humor and stakes land. One of DCA's top-tier rides.",
+    content:['guardians'],
+    url:'https://disneyland.disney.go.com/attractions/disney-california-adventure/guardians-of-the-galaxy-mission-breakout/'},
+  'web-slingers':{id:'web-slingers',emoji:'🎢',name:"WEB Slingers: A Spider-Man Adventure",type:'Ride',typeClass:'type-ride',
+    location:"Disney California Adventure — Avengers Campus",
+    desc:"Shoot web projectiles using hand gestures (no controller) to capture Spider-Bots. Family-friendly, fun as a group competition. Spider-Man swings overhead nearby — catch him outside the ride too.",
+    content:['spidey'],
+    url:'https://disneyland.disney.go.com/attractions/disney-california-adventure/web-slingers-a-spider-man-adventure/'},
+  'indy':{id:'indy',emoji:'🎢',name:"Indiana Jones Adventure",type:'Ride',typeClass:'type-ride',
+    location:"Disneyland Park — Adventureland",
+    desc:"A jeep through an ancient temple. The queue alone is extraordinary — Indy's camp, hieroglyphs, animatronic snakes, a film reel, a rope bridge crossing. One of Disneyland's signature experiences. A fresh rewatch of Raiders makes every queue detail click. Use Lightning Lane.",
+    content:['raiders'],
+    url:'https://disneyland.disney.go.com/attractions/disneyland/indiana-jones-adventure/'},
+  'tianas':{id:'tianas',emoji:'🎢',name:"Tiana's Bayou Adventure",type:'Ride',typeClass:'type-ride',
+    location:"Disneyland Park — New Orleans Square",
+    desc:"The reimagined Splash Mountain. Set after the film's ending — Tiana and Louis prepare for their first Mardi Gras performance. Original music, new Audio-Animatronics, classic log flume drop. Knowing the characters makes the new songs and story resonate.",
+    content:['princess-frog'],
+    url:'https://disneyland.disney.go.com/attractions/disneyland/tianas-bayou-adventure/'},
+  'incredicoaster':{id:'incredicoaster',emoji:'🎢',name:"Incredicoaster",type:'Ride',typeClass:'type-ride',
+    location:"Disney California Adventure — Pixar Pier",
+    desc:"Fast outdoor roller coaster following Jack-Jack's chaotic powers through scenes with the Parr family. Knowing the characters — especially Jack-Jack — makes the scenes funnier. DCA's most intense coaster.",
+    content:['incredibles'],
+    url:'https://disneyland.disney.go.com/attractions/disney-california-adventure/incredicoaster/'},
+  'toy-story-mania':{id:'toy-story-mania',emoji:'🎢',name:"Toy Story Midway Mania!",type:'Ride',typeClass:'type-ride',
+    location:"Disney California Adventure — Pixar Pier",
+    desc:"4D shooting game: compete against your party through carnival-style Toy Story mini-games. Woody, Buzz, and the gang host each game. Pure competitive fun — minimal plot context needed.",
+    content:['toy-story-1'],
+    url:'https://disneyland.disney.go.com/attractions/disney-california-adventure/toy-story-midway-mania/'},
+  'broken-spell':{id:'broken-spell',emoji:'🍸',name:"Broken Spell Lounge",type:'Dining',typeClass:'type-dine',
+    location:"Disneyland Hotel — near Goofy's Kitchen",
+    desc:"A hidden gem at the Disneyland Hotel with a new Sleeping Beauty theme. Rarely crowded because it doesn't appear prominently in the app. Adult-oriented bar experience in a surprisingly beautiful setting.",
+    content:['sleeping-beauty'],
+    url:'https://disneyland.disney.go.com/dining/disneyland-hotel/broken-spell-lounge/'},
+  'castle-walkthrough':{id:'castle-walkthrough',emoji:'🏰',name:"Sleeping Beauty Castle Walkthrough",type:'Experience',typeClass:'type-exp',
+    location:"Disneyland Park — Hub",
+    desc:"A self-guided walk through the castle featuring dioramas telling the story of Sleeping Beauty. Free with park admission — often overlooked. Brief but beautifully crafted.",
+    content:['sleeping-beauty'],
+    url:'https://disneyland.disney.go.com/attractions/disneyland/sleeping-beauty-castle-walkthrough/'},
+  'world-of-color':{id:'world-of-color',emoji:'🌊',name:"World of Color Happiness!",type:'Show',typeClass:'type-show',
+    location:"Disney California Adventure — Paradise Bay",
+    desc:"Nighttime water-and-light spectacular projected on a mist screen. The 70th Anniversary edition features scenes from dozens of Disney and Pixar films. The more films you've seen, the more it rewards you — but it's visually stunning regardless. Get there 30+ min early for a good spot.",
+    content:['inside-out-1','coco','incredibles','toy-story-1','up','cars-1'],
+    url:'https://disneyland.disney.go.com/entertainment/disney-california-adventure/world-of-color/'},
+  'downtown-disney':{id:'downtown-disney',emoji:'🛍',name:"Downtown Disney District",type:'Land',typeClass:'type-land',
+    location:"Disneyland Resort — Between parks and hotels",
+    desc:"Free-to-enter outdoor shopping and dining. No park ticket required — ideal for your May 29 arrival day. Best new spots: Din Tai Fung (premium Taiwanese), Jazz Kitchen (live music + Cajun), Centrico (modern Mexican), Paseo, and Porto's Bakery (Cuban pastries, opening 2026). Gordon Ramsay's Carnaby Tavern (1960s British gastropub) also opening 2026.",
+    content:[],
+    url:'https://disneyland.disney.go.com/destinations/downtown-disney-district/'},
+  'disneyland-hotel':{id:'disneyland-hotel',emoji:'🏨',name:"Disneyland Hotel",type:'Hotel',typeClass:'type-hotel',
+    location:"Disneyland Resort — Downtown Disney adjacent",
+    desc:"The original on-site hotel. Goofy's Kitchen: character dining with Mickey, Minnie, and friends (breakfast/dinner). Tangaroa Terrace: tropical food, Dole Whip with rum. Broken Spell Lounge: Sleeping Beauty themed, a hidden gem. Fantasia-themed pool.",
+    content:['sleeping-beauty'],
+    url:'https://disneyland.disney.go.com/hotels/disneyland-hotel/'},
+};
+
+// ══════════════════════════════════════════════════════════
+// SVG POSTER & ATTRACTION CARD GENERATORS
+// No external images — everything renders inline, always.
+// ══════════════════════════════════════════════════════════
+
+// Color palettes per content group
+const GROUP_PALETTES = {
+  'Star Wars':       { bg1:'#0D0D1A', bg2:'#1A1A3A', accent:'#FFE81F', text:'#FFE81F', star:true },
+  'Cars Land':       { bg1:'#1A0A00', bg2:'#3D1F00', accent:'#E8A020', text:'#FFD080', star:false },
+  'Avengers Campus': { bg1:'#0A0A1A', bg2:'#1A0A0A', accent:'#C41E3A', text:'#FF6B6B', star:false },
+  'Pixar':           { bg1:'#0A1A2A', bg2:'#1A2A3A', accent:'#4FC3F7', text:'#E0F4FF', star:true },
+  'Classic Disney':  { bg1:'#1A0A1A', bg2:'#2A1A2A', accent:'#C9A84C', text:'#E8D5A0', star:true },
+};
+
+const TYPE_PALETTES = {
+  'type-ride':  { bg1:'#0A1520', bg2:'#152A3A', accent:'#6EB5D4', label:'RIDE' },
+  'type-dine':  { bg1:'#1A1200', bg2:'#2A2000', accent:'#C9A84C', label:'DINING' },
+  'type-exp':   { bg1:'#0A1A10', bg2:'#152A18', accent:'#4CAF7D', label:'EXPERIENCE' },
+  'type-shop':  { bg1:'#150A20', bg2:'#221530', accent:'#C9A0DC', label:'SHOP' },
+  'type-hotel': { bg1:'#1A1000', bg2:'#2A1A00', accent:'#E0A050', label:'HOTEL' },
+  'type-show':  { bg1:'#1A0A0A', bg2:'#2A1010', accent:'#E07070', label:'SHOW' },
+  'type-land':  { bg1:'#0A0A0A', bg2:'#1A1A1A', accent:'#C9A84C', label:'LAND' },
+};
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function wrapText(text, maxChars){
+  // Split title into lines of max maxChars
+  const words = text.split(' ');
+  const lines = []; let line = '';
+  words.forEach(w=>{
+    if((line+' '+w).trim().length > maxChars && line){ lines.push(line.trim()); line=w; }
+    else line=(line+' '+w).trim();
+  });
+  if(line) lines.push(line.trim());
+  return lines;
+}
+
+function makeStars(count, w, h){
+  let s='';
+  for(let i=0;i<count;i++){
+    const x=(Math.sin(i*137.508)*0.5+0.5)*w;
+    const y=(Math.cos(i*97.3)*0.5+0.5)*h;
+    const r=Math.random()*1+0.3;
+    const op=Math.random()*0.5+0.2;
+    s+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="white" opacity="${op.toFixed(2)}"/>`;
+  }
+  return s;
+}
+
+// Generate a movie poster SVG (160×240 large, 52×78 small)
+function makeContentPosterHtml(c, large=false){
+  const W = large ? 160 : 52;
+  const H = large ? 240 : 78;
+  const pal = GROUP_PALETTES[c.group] || GROUP_PALETTES['Classic Disney'];
+  const titleLines = wrapText(c.title, large ? 14 : 7);
+  const fontSize = large ? (titleLines.length > 2 ? 11 : 13) : 7;
+  const emojiSize = large ? 42 : 16;
+  const emojiY = large ? 90 : 28;
+  const titleY = large ? 148 : 52;
+  const lineH = large ? 16 : 9;
+  const yearSize = large ? 9 : 5.5;
+
+  const titleSvg = titleLines.slice(0,large?3:2).map((l,i)=>
+    `<text x="${W/2}" y="${titleY + i*lineH}" text-anchor="middle" fill="${esc(pal.text)}" font-size="${fontSize}" font-family="Georgia,serif" font-weight="bold">${esc(l)}</text>`
+  ).join('');
+
+  const borderColor = pal.accent;
+  const stars = (pal.star && large) ? makeStars(30, W, H) : '';
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <defs>
+      <linearGradient id="pg${c.id.replace(/[^a-z0-9]/g,'')}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${esc(pal.bg1)}"/>
+        <stop offset="100%" stop-color="${esc(pal.bg2)}"/>
+      </linearGradient>
+    </defs>
+    <rect width="${W}" height="${H}" fill="url(#pg${c.id.replace(/[^a-z0-9]/g,'')})"/>
+    ${stars}
+    <rect width="${W}" height="${H}" fill="none" stroke="${esc(borderColor)}" stroke-width="${large?1.5:0.75}" opacity="0.5"/>
+    ${large?`<rect x="8" y="8" width="${W-16}" height="${H-16}" fill="none" stroke="${esc(borderColor)}" stroke-width="0.5" opacity="0.25"/>`:''}
+    <text x="${W/2}" y="${emojiY}" text-anchor="middle" font-size="${emojiSize}">${esc(c.emoji)}</text>
+    ${titleSvg}
+    ${large?`<text x="${W/2}" y="${H-18}" text-anchor="middle" fill="${esc(pal.accent)}" font-size="${yearSize}" font-family="Arial,sans-serif" opacity="0.8" letter-spacing="2">${esc(c.year)}</text>`:''}
+    ${large?`<rect x="${W/2-20}" y="${H-28}" width="40" height="1" fill="${esc(pal.accent)}" opacity="0.4"/>`:''}
+  </svg>`;
+
+  const encoded = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  const radius = large ? '10px' : '5px';
+  const margin = large ? 'margin:0 auto 1rem;display:block;' : 'flex-shrink:0;';
+  const shadow = large ? 'box-shadow:0 8px 32px rgba(0,0,0,.5);' : '';
+  return `<img src="${encoded}" width="${W}" height="${H}" alt="${esc(c.title)}"
+    style="border-radius:${radius};border:1px solid rgba(201,168,76,.25);${margin}${shadow}">`;
+}
+
+// Generate an attraction hero SVG (full width, 200px tall)
+function makeAttrPhotoHtml(a){
+  const W = 680; const H = 200;
+  const pal = TYPE_PALETTES[a.typeClass] || TYPE_PALETTES['type-ride'];
+  const titleLines = wrapText(a.name, 28);
+  const stars = makeStars(40, W, H);
+
+  // Decorative geometric shapes based on type
+  const deco = {
+    'type-ride':  `<polygon points="${W*0.8},20 ${W*0.95},${H*0.5} ${W*0.8},${H-20} ${W*0.65},${H*0.5}" fill="${esc(pal.accent)}" opacity="0.06"/>
+                   <circle cx="${W*0.85}" cy="${H*0.3}" r="60" fill="${esc(pal.accent)}" opacity="0.04"/>`,
+    'type-dine':  `<circle cx="${W*0.82}" cy="${H*0.5}" r="70" fill="${esc(pal.accent)}" opacity="0.06"/>
+                   <circle cx="${W*0.9}" cy="${H*0.2}" r="30" fill="${esc(pal.accent)}" opacity="0.04"/>`,
+    'type-exp':   `<polygon points="${W*0.75},10 ${W},${H*0.5} ${W*0.75},${H-10}" fill="${esc(pal.accent)}" opacity="0.05"/>`,
+    'type-land':  `<rect x="${W*0.6}" y="0" width="${W*0.5}" height="${H}" fill="${esc(pal.accent)}" opacity="0.04"/>`,
+    'type-show':  `<ellipse cx="${W*0.82}" cy="${H*0.5}" rx="90" ry="70" fill="${esc(pal.accent)}" opacity="0.06"/>`,
+    'type-hotel': `<rect x="${W*0.65}" y="${H*0.1}" width="${W*0.4}" height="${H*0.8}" rx="8" fill="${esc(pal.accent)}" opacity="0.05"/>`,
+  }[a.typeClass] || '';
+
+  const titleSvg = titleLines.slice(0,2).map((l,i)=>
+    `<text x="36" y="${120 + i*26}" fill="white" font-size="${titleLines.length>1?22:26}" font-family="Georgia,serif" font-weight="bold" opacity="0.95">${esc(l)}</text>`
+  ).join('');
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <defs>
+      <linearGradient id="ag${a.id.replace(/[^a-z0-9]/g,'')}" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="${esc(pal.bg1)}"/>
+        <stop offset="100%" stop-color="${esc(pal.bg2)}"/>
+      </linearGradient>
+      <linearGradient id="ag2${a.id.replace(/[^a-z0-9]/g,'')}" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="${esc(pal.bg1)}" stop-opacity="1"/>
+        <stop offset="100%" stop-color="${esc(pal.bg1)}" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <rect width="${W}" height="${H}" fill="url(#ag${a.id.replace(/[^a-z0-9]/g,'')})"/>
+    ${stars}
+    ${deco}
+    <rect width="${W}" height="${H}" fill="url(#ag2${a.id.replace(/[^a-z0-9]/g,'')})"/>
+    <rect width="${W}" height="${H}" fill="none" stroke="${esc(pal.accent)}" stroke-width="1.5" opacity="0.3"/>
+    <text x="30" y="62" font-size="44" opacity="0.9">${esc(a.emoji)}</text>
+    ${titleSvg}
+    <rect x="36" y="155" width="60" height="2" fill="${esc(pal.accent)}" opacity="0.6"/>
+    <text x="36" y="175" fill="${esc(pal.accent)}" font-size="11" font-family="Arial,sans-serif" letter-spacing="3" opacity="0.8">${esc(pal.label)}</text>
+  </svg>`;
+
+  const encoded = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  return `<img src="${encoded}" alt="${esc(a.name)}"
+    style="width:100%;height:200px;object-fit:cover;border-radius:var(--r);border:1px solid rgba(201,168,76,.2);margin-bottom:1.25rem;display:block">`;
+}
+
+const VENUES = [
+  {id:'disneyland', icon:'🏰', label:'Disneyland Park'},
+  {id:'dca',        icon:'🎢', label:'Disney California Adventure'},
+  {id:'downtown',   icon:'🛍', label:'Downtown Disney'},
+  {id:'hotel',      icon:'🏨', label:'Disneyland Hotel'},
+];
+
+const SEASONAL_WINDOWS = {
+  halloween:  {start:'08-15', end:'10-31', label:'Halloween Season', icon:'🎃',
+    desc:'Haunted Mansion Holiday overlay active. Nightmare Before Christmas theming throughout.',
+    contentIds:['nbc']},
+  christmas:  {start:'11-15', end:'01-10', label:'Christmas Season', icon:'⛄',
+    desc:'Haunted Mansion Holiday and "it\'s a small world" Holiday overlay.',
+    contentIds:['nbc']},
+  anniversary:{start:'07-17', end:'08-09', label:'70th Anniversary Celebration', icon:'✨',
+    desc:'Special entertainment, Tapestry of Happiness and Paint the Night parades through Aug 9.', contentIds:[]},
+};
+
+// ══════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════
+let currentScreen = 'home';
+let screenHistory = [];
+let currentUser = null;
+let editingUser = null;
+let obState = { step:0, totalSteps:5, mode:'solo', emoji:'🧑', name:'', dateFrom:'', dateTo:'', venues:[], checklist:{} };
+let selectedEmoji = '🧑';
+const EMOJIS = ['🧑','👩','👨','🧒','👧','👦','🧔','👴','👵','🧙','🦸','🐭','🐻','🦁','🐸','🦊','🐼','🐧','🌟','🎩'];
+
+// ── Storage ──
+function getProfiles(){ try{return JSON.parse(localStorage.getItem('dlm_profiles')||'{}')}catch{return{}} }
+function saveProfiles(p){ localStorage.setItem('dlm_profiles',JSON.stringify(p)) }
+function getUserData(n){ const p=getProfiles(); return p[n]||{emoji:'🧑',mode:'solo',venues:[],dateFrom:'',dateTo:'',checklist:{},watchlist:{}} }
+function saveUserData(n,d){ const p=getProfiles(); p[n]=d; saveProfiles(p) }
+
+// ══════════════════════════════════════════════════════════
+// STARFIELD
+// ══════════════════════════════════════════════════════════
+function buildStars(){
+  const el=document.getElementById('stars');
+  for(let i=0;i<80;i++){
+    const s=document.createElement('div'); s.className='star';
+    const size=Math.random()*2+.5;
+    s.style.cssText=`width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;
+      --d:${2+Math.random()*4}s;--delay:${Math.random()*5}s;
+      --min:${.05+Math.random()*.1};--max:${.5+Math.random()*.5}`;
+    el.appendChild(s);
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// SCREEN NAVIGATION
+// ══════════════════════════════════════════════════════════
+function showScreen(id){
+  screenHistory.push(currentScreen);
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  currentScreen=id;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function goBack(){
+  if(!screenHistory.length){showScreen('home');return}
+  const prev=screenHistory.pop();
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+prev).classList.add('active');
+  currentScreen=prev;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function goHome(){
+  screenHistory=[];
+  currentUser=null;
+  buildProfileGrid();
+  showScreen('home');
+}
+
+// ══════════════════════════════════════════════════════════
+// HOME SCREEN
+// ══════════════════════════════════════════════════════════
+function buildProfileGrid(){
+  const grid=document.getElementById('profiles-grid');
+  const profiles=getProfiles();
+  const keys=Object.keys(profiles);
+  grid.innerHTML='';
+  if(!keys.length){
+    grid.innerHTML='<div class="empty-state" style="grid-column:1/-1">No family members yet.<br>Add one to get started.</div>';
+  }
+  keys.forEach(name=>{
+    const data=getUserData(name);
+    const seen=Object.values(data.checklist||{}).filter(Boolean).length;
+    const total=getRelevantContent(data).length||1;
+    const pct=Math.round(seen/total*100);
+    const card=document.createElement('div');
+    card.className='profile-card pop-in';
+    card.innerHTML=`
+      <button class="p-edit-btn" onclick="event.stopPropagation();openEditModal('${name}')">✏️</button>
+      <span class="p-avatar">${data.emoji||'🧑'}</span>
+      <div class="p-name">${name}</div>
+      <div class="p-prog">${seen}/${total} · ${pct}%</div>
+      <div class="pip"><div class="pip-fill" style="width:${pct}%"></div></div>`;
+    card.onclick=()=>loadUser(name);
+    grid.appendChild(card);
+  });
+  // Family button
+  const fb=document.getElementById('family-btn');
+  const hn=document.getElementById('home-note');
+  if(keys.length>1){ fb.style.display=''; hn.style.display=''; }
+  else { fb.style.display='none'; hn.style.display='none'; }
+}
+
+// ══════════════════════════════════════════════════════════
+// ONBOARDING
+// ══════════════════════════════════════════════════════════
+function openAddModal(){ startOnboarding(null) }
+
+function startOnboarding(name){
+  obState={ step:0, totalSteps:5, mode:'solo', emoji:'🧑', name:'', dateFrom:'', dateTo:'', venues:[], checklist:{} };
+  selectedEmoji='🧑';
+  buildOBEmojiPicker();
+  buildStepDots();
+  buildVenueOptions();
+  document.getElementById('ob-name').value='';
+  document.getElementById('ob-date-from').value='';
+  document.getElementById('ob-date-to').value='';
+  document.querySelectorAll('.onboard-step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('step-0').classList.add('active');
+  showScreen('onboard');
+}
+
+function buildStepDots(){
+  const el=document.getElementById('step-dots');
+  el.innerHTML='';
+  for(let i=0;i<obState.totalSteps;i++){
+    const d=document.createElement('div'); d.className='step-dot'; d.id=`dot-${i}`;
+    el.appendChild(d);
+  }
+  updateDots();
+}
+
+function updateDots(){
+  for(let i=0;i<obState.totalSteps;i++){
+    const d=document.getElementById(`dot-${i}`);
+    if(!d)return;
+    d.className='step-dot'+(i===obState.step?' active':i<obState.step?' done':'');
+  }
+}
+
+function buildOBEmojiPicker(){
+  const el=document.getElementById('ob-emoji-row'); el.innerHTML='';
+  EMOJIS.forEach((e,i)=>{
+    const b=document.createElement('div'); b.className='emoji-btn'+(i===0?' sel':'');
+    b.textContent=e; b.onclick=()=>{ document.querySelectorAll('#ob-emoji-row .emoji-btn').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); selectedEmoji=e; obState.emoji=e; };
+    el.appendChild(b);
+  });
+}
+
+function selectMode(mode){
+  obState.mode=mode;
+  document.getElementById('opt-solo').classList.toggle('sel',mode==='solo');
+  document.getElementById('opt-family').classList.toggle('sel',mode==='family');
+  setTimeout(()=>obGoToStep(1),300);
+}
+
+function obGoToStep(n){
+  document.querySelectorAll('.onboard-step').forEach(s=>s.classList.remove('active'));
+  obState.step=n; updateDots();
+  document.getElementById(`step-${n}`).classList.add('active');
+}
+
+function obNext(){
+  const s=obState.step;
+  if(s===1){
+    const name=document.getElementById('ob-name').value.trim();
+    if(!name){alert('Please enter your name.');return}
+    const profiles=getProfiles();
+    if(profiles[name]){alert('That name is already taken.');return}
+    obState.name=name; obState.emoji=selectedEmoji;
+    obGoToStep(2);
+  } else if(s===2){
+    obState.dateFrom=document.getElementById('ob-date-from').value;
+    obState.dateTo=document.getElementById('ob-date-to').value;
+    obGoToStep(3);
+  } else if(s===3){
+    if(!obState.venues.length){alert('Please select at least one venue.');return}
+    buildOBSurvey();
+    obGoToStep(4);
+  }
+}
+
+function obSkip(){ obGoToStep(3) }
+function obSetMode(mode){
+  obState.tripMode=mode; // 'planning' or 'browsing'
+  obState.dateFrom=''; obState.dateTo='';
+  obGoToStep(3);
+}
+
+function buildVenueOptions(){
+  const el=document.getElementById('venue-options'); el.innerHTML='';
+  VENUES.forEach(v=>{
+    const row=document.createElement('div'); row.className='toggle-row';
+    row.id=`venue-${v.id}`;
+    row.innerHTML=`<span class="toggle-icon">${v.icon}</span><span class="toggle-label">${v.label}</span>
+      <div class="toggle-check"><span class="toggle-check-inner">✓</span></div>`;
+    row.onclick=()=>{
+      row.classList.toggle('sel');
+      const idx=obState.venues.indexOf(v.id);
+      if(idx>-1) obState.venues.splice(idx,1); else obState.venues.push(v.id);
+    };
+    el.appendChild(row);
+  });
+}
+
+function buildOBSurvey(){
+  const el=document.getElementById('ob-survey'); el.innerHTML='';
+  // Filter by venues
+  const relevant=Object.values(CONTENT).filter(c=>{
+    if(!c.venues||!c.venues.length) return true;
+    return c.venues.some(v=>{
+      if(v==='disneyland'&&obState.venues.includes('disneyland')) return true;
+      if(v==='dca'&&obState.venues.includes('dca')) return true;
+      if(v==='hotel'&&obState.venues.includes('hotel')) return true;
+      if(v==='downtown'&&obState.venues.includes('downtown')) return true;
+      return false;
+    });
+  }).filter(c=>!c.seasonal); // exclude seasonal for survey
+  const groups={};
+  relevant.forEach(c=>{ if(!groups[c.group]) groups[c.group]=[]; groups[c.group].push(c) });
+  Object.entries(groups).forEach(([grp,items])=>{
+    const label=document.createElement('div'); label.className='section-label'; label.style.marginTop='1.25rem';
+    label.textContent=grp; el.appendChild(label);
+    items.forEach(c=>{
+      const row=document.createElement('div'); row.className='ci'; row.id=`ob-ci-${c.id}`;
+      row.innerHTML=`<div class="ci-cb"><span class="ci-check">✓</span></div>
+        <div class="ci-body"><div class="ci-title">${c.emoji} ${c.title} <span style="font-size:.75rem;color:var(--cream-3)">(${c.year})</span></div>
+        <div class="ci-meta">${c.runtime} · ${c.type}</div></div>`;
+      row.onclick=()=>{
+        row.classList.toggle('checked');
+        obState.checklist[c.id]=row.classList.contains('checked');
+      };
+      el.appendChild(row);
+    });
+  });
+}
+
+function finishOnboarding(){
+  const data={
+    emoji:obState.emoji, mode:obState.mode,
+    venues:obState.venues, dateFrom:obState.dateFrom, dateTo:obState.dateTo,
+    tripMode:obState.tripMode||'confirmed',
+    checklist:obState.checklist, watchlist:{}
+  };
+  saveUserData(obState.name,data);
+  buildProfileGrid();
+  loadUser(obState.name);
+}
+
+// ══════════════════════════════════════════════════════════
+// DATE FLAGS (onboarding)
+// ══════════════════════════════════════════════════════════
+function checkDateFlags(){
+  const from=document.getElementById('ob-date-from').value;
+  const to=document.getElementById('ob-date-to').value;
+  const el=document.getElementById('date-flags'); el.innerHTML='';
+  if(!from) return;
+  const d1=new Date(from+'T00:00:00');
+  const flags=getSeasonalFlags(from,to);
+  flags.forEach(f=>{
+    const b=document.createElement('div'); b.className='seasonal-banner';
+    b.innerHTML=`<span style="font-size:1.2rem">${f.icon}</span><div><strong>${f.label}</strong><br>${f.desc}</div>`;
+    el.appendChild(b);
+  });
+}
+document.getElementById('ob-date-from').addEventListener('change',checkDateFlags);
+document.getElementById('ob-date-to').addEventListener('change',checkDateFlags);
+
+function getSeasonalFlags(from,to){
+  if(!from) return [];
+  const flags=[];
+  const d1=new Date(from+'T00:00:00');
+  const d2=to?new Date(to+'T00:00:00'):d1;
+  Object.entries(SEASONAL_WINDOWS).forEach(([key,w])=>{
+    const yr=d1.getFullYear();
+    let ws=new Date(`${yr}-${w.start}`), we=new Date(`${yr}-${w.end}`);
+    if(w.start>'12-00'&&w.end<'06-00'){ we=new Date(`${yr+1}-${w.end}`) } // xmas wraps year
+    if(d1<=we&&d2>=ws) flags.push(w);
+  });
+  return flags;
+}
+
+// ══════════════════════════════════════════════════════════
+// LOAD USER / MAIN SCREEN
+// ══════════════════════════════════════════════════════════
+function getRelevantContent(data){
+  const venues=data.venues||[];
+  return Object.values(CONTENT).filter(c=>{
+    if(c.seasonal){
+      const flags=getSeasonalFlags(data.dateFrom,data.dateTo);
+      return flags.some(f=>f.contentIds.includes(c.id));
+    }
+    if(!c.venues||!c.venues.length) return true;
+    return c.venues.some(v=>{
+      if(v==='disneyland'&&venues.includes('disneyland')) return true;
+      if(v==='dca'&&venues.includes('dca')) return true;
+      if(v==='hotel'&&venues.includes('hotel')) return true;
+      if(v==='downtown'&&venues.includes('downtown')) return true;
+      return false;
+    });
+  });
+}
+
+function getWatchlist(data){
+  const relevant=getRelevantContent(data);
+  return relevant.filter(c=>!data.checklist[c.id]);
+}
+
+function loadUser(name){
+  currentUser=name;
+  const data=getUserData(name);
+  document.getElementById('ub-avatar').textContent=data.emoji||'🧑';
+  document.getElementById('ub-name').textContent=name;
+  // Trip pill
+  if(data.dateFrom){ document.getElementById('header-pill').textContent=`✦ ${fmtDate(data.dateFrom)}${data.dateTo?' – '+fmtDate(data.dateTo):''}` }
+  else { document.getElementById('header-pill').textContent='✦ Disneyland Resort, Anaheim CA' }
+  // Trip banner
+  const tb=document.getElementById('trip-banner');
+  if(data.tripMode==='browsing'){
+    tb.style.display=''; tb.innerHTML=`<div class="note">✨ <strong>Just browsing</strong> — exploring what to watch for a future Disneyland trip. Update your dates anytime in settings.</div>`;
+  } else if(data.tripMode==='planning'){
+    tb.style.display=''; tb.innerHTML=`<div class="note">🗓 <strong>Still planning</strong> — dates not set yet. All content is shown. Add your dates anytime to get seasonal recommendations.</div>`;
+  } else if(data.dateFrom){
+    const days=daysUntil(data.dateFrom);
+    if(days>0) { tb.style.display=''; tb.innerHTML=`<div class="note"><strong>${days} day${days===1?'':'s'} until your trip!</strong> ${(data.venues||[]).map(v=>VENUES.find(x=>x.id===v)).filter(Boolean).map(v=>v.icon+' '+v.label).join(' · ')}</div>`; }
+    else if(days===0) { tb.style.display=''; tb.innerHTML=`<div class="note" style="border-color:var(--green)"><strong>✨ Today's the day!</strong> Have an amazing time at Disneyland!</div>`; }
+    else { tb.style.display='none'; }
+  } else tb.style.display='none';
+  // Seasonal banners
+  const sb=document.getElementById('seasonal-banners'); sb.innerHTML='';
+  getSeasonalFlags(data.dateFrom,data.dateTo).forEach(f=>{
+    const b=document.createElement('div'); b.className='seasonal-banner';
+    b.innerHTML=`<span style="font-size:1.3rem">${f.icon}</span><div><strong>${f.label}</strong><br>${f.desc}</div>`;
+    sb.appendChild(b);
+  });
+  buildWatchlist(data);
+  buildChecklist(data);
+  buildAttractionsList(data);
+  updateStats(data);
+  // Reset tabs
+  document.querySelectorAll('.tab-pane').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-watchlist').classList.add('active');
+  document.querySelector('.tab-btn').classList.add('active');
+  screenHistory=[];
+  showScreen('main');
+}
+
+function fmtDate(d){ if(!d)return''; const x=new Date(d+'T00:00:00'); return x.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) }
+function daysUntil(d){ if(!d)return null; const t=new Date(d+'T00:00:00'); const now=new Date(); now.setHours(0,0,0,0); return Math.round((t-now)/86400000) }
+
+// ══════════════════════════════════════════════════════════
+// WATCHLIST TAB
+// ══════════════════════════════════════════════════════════
+function buildWatchlist(data){
+  const el=document.getElementById('watchlist-items'); el.innerHTML='';
+  const relevant=getRelevantContent(data);
+  const hidden=data.wlHidden||{};
+  const boosts=data.wlBoosts||{};
+  const deprio=data.wlDeprio||{};
+
+  // Items not yet seen and not hidden
+  const wl=relevant.filter(c=>!data.checklist[c.id]&&!hidden[c.id]);
+
+  // Check 100% completion of full relevant content
+  const totalRelevant=relevant.length;
+  const totalSeen=relevant.filter(c=>data.checklist[c.id]).length;
+  if(totalSeen===totalRelevant&&totalRelevant>0){
+    el.innerHTML=`<div class="completion-banner">
+      <span class="big-emoji">🎉✨🏰</span>
+      <h3>You're ready for the magic!</h3>
+      <p>You've watched everything on your list. Cinderella's castle awaits — have the most incredible trip.</p>
+    </div>`; return;
+  }
+
+  if(!wl.length&&Object.keys(hidden).length===0){
+    el.innerHTML=`<div class="card text-center" style="padding:2rem">
+      <div style="font-size:2.5rem;margin-bottom:.5rem">🎉</div>
+      <div class="serif" style="font-size:1.2rem;color:var(--gold-l)">You're all caught up!</div>
+      <div style="font-size:.83rem;color:var(--cream-2);margin-top:.4rem">You've seen everything relevant to your trip.</div>
+    </div>`; return;
+  }
+
+  // Sort: boosted first → default priority → normal → deprioritized
+  const sorted=[...wl].sort((a,b)=>{
+    const aBoost=boosts[a.id]?2:a.priority?1:0; const bBoost=boosts[b.id]?2:b.priority?1:0;
+    const aDeprio=deprio[a.id]?-1:0; const bDeprio=deprio[b.id]?-1:0;
+    const aScore=aBoost+aDeprio; const bScore=bBoost+bDeprio;
+    if(aScore!==bScore) return bScore-aScore;
+    return (b.attractions||[]).length-(a.attractions||[]).length;
+  });
+
+  const box=document.createElement('div'); box.className='card'; box.style.marginBottom='1rem';
+  box.innerHTML='<div class="serif" style="font-size:1.1rem;color:var(--gold-l);margin-bottom:.25rem">🎯 Your Watchlist</div>'
+    +'<div style="font-size:.75rem;color:var(--cream-2);margin-bottom:1rem">Tap ✓ to mark watched · Use controls to customize order</div>';
+
+  sorted.forEach((c,i)=>{
+    const item=document.createElement('div');
+    item.className='wi'+(boosts[c.id]?' wi-boosted':'')+(deprio[c.id]?' wi-deprioritized':'');
+    item.dataset.id=c.id;
+    if(data.watchlist[c.id]) item.classList.add('watched');
+    const attrs=(c.attractions||[]).filter(a=>ATTRACTIONS[a]&&checkAttrVenue(a,data.venues));
+    const attrPills=attrs.slice(0,3).map(a=>`<span class="attr-pill" onclick="event.stopPropagation();showAttrDetail('${a}')">${ATTRACTIONS[a].emoji} ${ATTRACTIONS[a].name} ↗</span>`).join('');
+    const isBoosted=!!boosts[c.id]; const isDeprio=!!deprio[c.id];
+    item.innerHTML=`
+      <div class="wi-num">${i+1}</div>
+      <div class="wi-body">
+        <div class="wi-title">${c.title}
+          ${isBoosted?'<span class="tag tag-pri">boosted</span>':''}
+          ${c.priority&&!isBoosted?'<span class="tag tag-pri">priority</span>':''}
+          ${c.rewatch?'<span class="tag tag-rw">rewatch</span>':''}
+          ${isDeprio?'<span class="tag" style="background:rgba(110,181,212,.1);border:1px solid rgba(110,181,212,.25);color:var(--blue)">low priority</span>':''}
+        </div>
+        <div class="wi-detail">${c.desc.substring(0,100)}…</div>
+        <div style="margin-top:6px;margin-bottom:2px">
+          <span style="font-size:.73rem;color:rgba(201,168,76,.75);cursor:pointer;font-weight:500;letter-spacing:.02em"
+            onclick="event.stopPropagation();showContentDetail('${c.id}')">🎬 View park connections ↗</span>
+        </div>
+        ${attrPills?`<div style="margin-top:4px;display:flex;flex-wrap:wrap;gap:3px">${attrPills}</div>`:''}
+        <div class="wi-actions">
+          ${!isBoosted?`<span class="wi-action-btn wi-action-boost" onclick="event.stopPropagation();wlBoost('${c.id}')">↑ Prioritize</span>`:''}
+          ${isBoosted?`<span class="wi-action-btn wi-action-drop" onclick="event.stopPropagation();wlUnboost('${c.id}')">↓ Remove boost</span>`:''}
+          ${!isDeprio&&!isBoosted?`<span class="wi-action-btn wi-action-drop" onclick="event.stopPropagation();wlDeprio('${c.id}')">↓ Low priority</span>`:''}
+          ${isDeprio?`<span class="wi-action-btn wi-action-boost" onclick="event.stopPropagation();wlUndeprio('${c.id}')">↑ Restore priority</span>`:''}
+          <span class="wi-action-btn wi-action-remove" onclick="event.stopPropagation();wlHide('${c.id}')">✕ Not interested</span>
+        </div>
+      </div>
+      <div class="wi-runtime">${c.runtime}</div>`;
+
+    // Clicking the number/checked area marks watched AND syncs to checklist
+    item.querySelector('.wi-num').addEventListener('click',e=>{
+      e.stopPropagation();
+      item.classList.toggle('watched');
+      const isWatched=item.classList.contains('watched');
+      const d2=getUserData(currentUser);
+      d2.watchlist[c.id]=isWatched;
+      // Sync: mark watched = mark seen in checklist too
+      if(isWatched){ d2.checklist[c.id]=true; }
+      saveUserData(currentUser,d2);
+      updateStats(d2);
+      // Rebuild after short delay for animation
+      setTimeout(()=>{ const d3=getUserData(currentUser); buildWatchlist(d3); buildChecklist(d3); },350);
+    });
+
+    box.appendChild(item);
+  });
+
+  el.appendChild(box);
+
+  // Hidden items tray
+  const hiddenIds=Object.keys(hidden).filter(id=>hidden[id]&&CONTENT[id]);
+  if(hiddenIds.length){
+    const tray=document.createElement('div'); tray.className='hidden-tray card';
+    tray.innerHTML=`<div class="hidden-tray-label" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+      ▸ ${hiddenIds.length} hidden title${hiddenIds.length>1?'s':''} — tap to show
+    </div><div style="display:none">`;
+    hiddenIds.forEach(id=>{
+      const c=CONTENT[id];
+      const row=document.createElement('div'); row.className='hidden-item';
+      row.innerHTML=`<span style="font-size:1.1rem">${c.emoji}</span>
+        <span class="hidden-title">${c.title}</span>
+        <span class="hidden-readd" onclick="wlUnhide('${id}')">+ Re-add</span>`;
+      tray.querySelector('div').appendChild(row);
+    });
+    el.appendChild(tray);
+  }
+}
+
+// ── Watchlist customization actions ──
+function wlBoost(id){ const d=getUserData(currentUser); d.wlBoosts=d.wlBoosts||{}; d.wlDeprio=d.wlDeprio||{}; d.wlBoosts[id]=true; delete d.wlDeprio[id]; saveUserData(currentUser,d); buildWatchlist(d); }
+function wlUnboost(id){ const d=getUserData(currentUser); d.wlBoosts=d.wlBoosts||{}; delete d.wlBoosts[id]; saveUserData(currentUser,d); buildWatchlist(d); }
+function wlDeprio(id){ const d=getUserData(currentUser); d.wlDeprio=d.wlDeprio||{}; d.wlBoosts=d.wlBoosts||{}; d.wlDeprio[id]=true; delete d.wlBoosts[id]; saveUserData(currentUser,d); buildWatchlist(d); }
+function wlUndeprio(id){ const d=getUserData(currentUser); d.wlDeprio=d.wlDeprio||{}; delete d.wlDeprio[id]; saveUserData(currentUser,d); buildWatchlist(d); }
+function wlHide(id){ const d=getUserData(currentUser); d.wlHidden=d.wlHidden||{}; d.wlHidden[id]=true; saveUserData(currentUser,d); buildWatchlist(d); }
+function wlUnhide(id){ const d=getUserData(currentUser); d.wlHidden=d.wlHidden||{}; delete d.wlHidden[id]; saveUserData(currentUser,d); buildWatchlist(d); }
+
+function checkAttrVenue(attrId,venues){
+  // Simple check — all our DCA attractions need dca, disneyland need disneyland
+  const dcaAttrs=['inside-out-whirlwind','lamplight','radiator-springs','flos','cars-land','avengers-campus','mission-breakout','web-slingers','incredicoaster','toy-story-mania','world-of-color','little-mermaid'];
+  const hotelAttrs=['broken-spell','disneyland-hotel'];
+  const downtownAttrs=['downtown-disney'];
+  if(dcaAttrs.includes(attrId)) return venues.includes('dca');
+  if(hotelAttrs.includes(attrId)) return venues.includes('hotel');
+  if(downtownAttrs.includes(attrId)) return venues.includes('downtown');
+  return venues.includes('disneyland');
+}
+
+// ══════════════════════════════════════════════════════════
+// CHECKLIST TAB
+// ══════════════════════════════════════════════════════════
+function buildChecklist(data){
+  const el=document.getElementById('checklist-items'); el.innerHTML='';
+  const relevant=getRelevantContent(data);
+  const groups={};
+  relevant.forEach(c=>{ if(!groups[c.group]) groups[c.group]=[]; groups[c.group].push(c) });
+  Object.entries(groups).forEach(([grp,items])=>{
+    const label=document.createElement('div'); label.className='section-label'; label.style.marginBottom='.75rem'; label.style.marginTop='1.5rem';
+    label.textContent=grp; el.appendChild(label);
+    items.forEach(c=>{
+      const attrs=(c.attractions||[]).filter(a=>ATTRACTIONS[a]&&checkAttrVenue(a,data.venues));
+      const ci=document.createElement('div'); ci.className='ci'; ci.dataset.id=c.id;
+      if(data.checklist[c.id]) ci.classList.add('checked');
+      const attrLinks=attrs.map(a=>`<span class="ci-link" onclick="event.stopPropagation();showAttrDetail('${a}')">${ATTRACTIONS[a].emoji} ${ATTRACTIONS[a].name} <span>↗</span></span>`).join('');
+      ci.innerHTML=`
+        ${makeContentPosterHtml(c,false)}
+        <div class="ci-cb"><span class="ci-check">✓</span></div>
+        <div class="ci-body">
+          <div class="ci-title">${c.title} <span style="font-size:.73rem;color:var(--cream-3)">${c.year} · ${c.runtime}</span>${c.seasonal?'<span class="tag tag-seasonal">seasonal</span>':''}${c.priority?'<span class="tag tag-pri">priority</span>':''}</div>
+          ${c.desc?`<div class="ci-meta" style="cursor:pointer;color:rgba(201,168,76,.6)" onclick="event.stopPropagation();showContentDetail('${c.id}')">Park connections ↗</div>`:''}
+          ${attrLinks?`<div class="ci-links">${attrLinks}</div>`:''}
+        </div>`;
+      ci.onclick=()=>{
+        ci.classList.toggle('checked');
+        const isChecked=ci.classList.contains('checked');
+        const d2=getUserData(currentUser);
+        d2.checklist[c.id]=isChecked;
+        // Sync: if marking seen, also mark watched on watchlist
+        if(isChecked){ d2.watchlist=d2.watchlist||{}; d2.watchlist[c.id]=true; }
+        saveUserData(currentUser,d2);
+        updateStats(d2);
+        buildWatchlist(d2);
+      };
+      el.appendChild(ci);
+    });
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// ATTRACTIONS TAB
+// ══════════════════════════════════════════════════════════
+function buildAttractionsList(data){
+  const el=document.getElementById('attractions-list'); el.innerHTML='';
+  const sections=[
+    {label:'⚔️ Star Wars — Galaxy\'s Edge',ids:['galaxys-edge','rise-resistance','mf-smugglers','ogas','milk-stand','savis']},
+    {label:'✨ Pixar',ids:['inside-out-whirlwind','lamplight','incredicoaster','toy-story-mania']},
+    {label:'🦸 Marvel — Avengers Campus',ids:['avengers-campus','mission-breakout','web-slingers']},
+    {label:'🚗 Cars Land',ids:['cars-land','radiator-springs','flos']},
+    {label:'🏰 Classic Disney',ids:['indy','tianas','castle-walkthrough']},
+    {label:'🌃 Entertainment',ids:['world-of-color']},
+    {label:'🏨 Hotel & Downtown',ids:['broken-spell','disneyland-hotel','downtown-disney']},
+  ];
+  sections.forEach(s=>{
+    const filtered=s.ids.filter(id=>ATTRACTIONS[id]&&checkAttrVenue(id,data.venues));
+    if(!filtered.length) return;
+    const label=document.createElement('div'); label.className='section-label'; label.style.marginTop='1.5rem'; label.style.marginBottom='.75rem';
+    label.textContent=s.label; el.appendChild(label);
+    filtered.forEach(id=>{
+      const a=ATTRACTIONS[id];
+      const ready=getAttrReadiness(id,data);
+      const card=document.createElement('div'); card.className='attr-card';
+      card.innerHTML=`
+        <div class="attr-card-hd">
+          <div class="attr-name">${a.emoji} ${a.name}</div>
+          <span class="attr-type ${a.typeClass}">${a.type}</span>
+        </div>
+        <div class="attr-location">📍 ${a.location}</div>
+        <div class="attr-desc-short">${a.desc.substring(0,110)}…</div>
+        <div class="${ready.cls} ready-badge">${ready.icon} ${ready.label}</div>`;
+      card.onclick=()=>showAttrDetail(id);
+      el.appendChild(card);
+    });
+  });
+}
+
+function getAttrReadiness(attrId,data){
+  const a=ATTRACTIONS[attrId];
+  if(!a.content||!a.content.length) return {cls:'ready-yes',icon:'✓',label:'No prep needed'};
+  const total=a.content.length;
+  const seen=a.content.filter(cid=>data.checklist[cid]).length;
+  if(seen===total) return {cls:'ready-yes',icon:'✓',label:'Fully prepped'};
+  if(seen===0) return {cls:'ready-no',icon:'○',label:`0/${total} content seen`};
+  return {cls:'ready-partial',icon:'◐',label:`${seen}/${total} content seen`};
+}
+
+// ══════════════════════════════════════════════════════════
+// STATS
+// ══════════════════════════════════════════════════════════
+function updateStats(data){
+  const relevant=getRelevantContent(data);
+  const total=relevant.length||1;
+  const seen=relevant.filter(c=>data.checklist[c.id]).length;
+  const pct=Math.round(seen/total*100);
+  document.getElementById('s-seen').textContent=seen;
+  document.getElementById('s-left').textContent=total-seen;
+  document.getElementById('s-pct').textContent=pct+'%';
+  document.getElementById('prog-pct').textContent=pct+'%';
+  document.getElementById('prog-fill').style.width=pct+'%';
+}
+
+// ══════════════════════════════════════════════════════════
+// CONTENT DETAIL SCREEN
+// ══════════════════════════════════════════════════════════
+function showContentDetail(contentId){
+  const c=CONTENT[contentId];
+  if(!c) return;
+  const data=currentUser?getUserData(currentUser):{venues:Object.keys(VENUES).map(v=>VENUES[v].id),checklist:{}};
+  const seen=data.checklist[c.id]?true:false;
+  const relevantAttrs=(c.attractions||[]).filter(a=>ATTRACTIONS[a]);
+  const el=document.getElementById('content-detail-body');
+  el.innerHTML=`
+    ${makeContentPosterHtml(c, true)}
+    <div class="serif detail-title">${c.title}</div>
+    <div class="detail-sub">${c.year} · ${c.runtime} · ${c.type}${c.group?' · '+c.group:''}</div>
+    <div style="margin-bottom:.75rem">
+      <span class="chip">${seen?'✓ Seen':'Not seen yet'}</span>
+      ${c.priority?'<span class="chip" style="color:var(--green)">Priority watch</span>':''}
+      ${c.rewatch?'<span class="chip" style="color:var(--blue)">Rewatch recommended</span>':''}
+      ${c.seasonal?'<span class="chip" style="color:var(--red)">Seasonal only</span>':''}
+    </div>
+    <div class="detail-desc">${c.desc}</div>
+    ${c.spoiler?`<div class="detail-spoiler">⚠️ Spoiler level: ${c.spoiler}</div>`:''}
+    ${relevantAttrs.length?`
+      <div class="section-label" style="margin-bottom:.75rem">Connected Attractions at the Park</div>
+      ${relevantAttrs.map(id=>{
+        const a=ATTRACTIONS[id];
+        const ready=currentUser?getAttrReadiness(id,data):{cls:'',icon:'',label:''};
+        return `<div class="attr-card" onclick="showAttrDetail('${id}')">
+          <div class="attr-card-hd"><div class="attr-name">${a.emoji} ${a.name}</div><span class="attr-type ${a.typeClass}">${a.type}</span></div>
+          <div class="attr-location">📍 ${a.location}</div>
+          ${currentUser?`<div class="${ready.cls} ready-badge">${ready.icon} ${ready.label}</div>`:''}
+        </div>`;
+      }).join('')}`:''}
+  `;
+  showScreen('content');
+}
+
+// ══════════════════════════════════════════════════════════
+// ATTRACTION DETAIL SCREEN
+// ══════════════════════════════════════════════════════════
+function showAttrDetail(attrId){
+  const a=ATTRACTIONS[attrId];
+  if(!a) return;
+  const data=currentUser?getUserData(currentUser):{venues:VENUES.map(v=>v.id),checklist:{}};
+  const ready=getAttrReadiness(attrId,data);
+  const relatedContent=(a.content||[]).filter(id=>CONTENT[id]);
+  const el=document.getElementById('attraction-detail-body');
+  el.innerHTML=`
+    ${makeAttrPhotoHtml(a)}
+    <div class="card" style="margin-bottom:1rem">
+      <div class="serif detail-title">${a.name}</div>
+      <div class="detail-sub">${a.type} · ${a.location}</div>
+      <div class="detail-desc">${a.desc}</div>
+      ${a.url?`<a class="detail-link" href="${a.url}" target="_blank" rel="noopener">View on Disneyland.com ↗</a>`:''}
+      <div style="margin-top:1rem">
+        <div style="font-size:.75rem;color:var(--cream-2);margin-bottom:.35rem">Your readiness</div>
+        <div class="${ready.cls} ready-badge" style="font-size:.82rem;padding:5px 12px">${ready.icon} ${ready.label}</div>
+      </div>
+    </div>
+    ${relatedContent.length?`
+      <div class="section-label" style="margin-bottom:.75rem">Watch Before You Go</div>
+      ${relatedContent.map(id=>{
+        const c=CONTENT[id];
+        const seen=data.checklist[id];
+        return `<div class="card" style="cursor:pointer;margin-bottom:8px;display:flex;gap:12px;align-items:center" onclick="showContentDetail('${id}')">
+          ${makeContentPosterHtml(c,false)}
+          <div style="flex:1;min-width:0">
+            <div style="font-size:.88rem;color:var(--cream);font-weight:500">${c.title}</div>
+            <div style="font-size:.73rem;color:var(--cream-2);margin-top:2px">${c.year} · ${c.runtime}</div>
+            <div style="margin-top:4px"><span class="chip" style="${seen?'color:var(--green)':''}">${seen?'✓ Seen':'Not seen'}</span></div>
+          </div>
+        </div>`;
+      }).join('')}`:''}
+  `;
+  showScreen('attraction');
+}
+
+// ══════════════════════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════════════════════
+function switchTab(e,name){
+  document.querySelectorAll('.tab-pane').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  e.target.classList.add('active');
+}
+
+// ══════════════════════════════════════════════════════════
+// FAMILY REPORT
+// ══════════════════════════════════════════════════════════
+function openFamilyReport(){
+  const profiles=getProfiles();
+  const names=Object.keys(profiles);
+  const el=document.getElementById('family-report-body'); el.innerHTML='';
+  // Count who needs each piece of content
+  const counts={};
+  Object.values(CONTENT).forEach(c=>{
+    const needers=names.filter(n=>!getUserData(n).checklist[c.id]);
+    if(needers.length>0) counts[c.id]={content:c,needers};
+  });
+  // Sort by number of needers desc
+  const sorted=Object.values(counts).sort((a,b)=>b.needers.length-a.needers.length);
+  const watchTogether=sorted.filter(x=>x.needers.length>1);
+  const soloWatch=sorted.filter(x=>x.needers.length===1);
+  if(watchTogether.length){
+    const label=document.createElement('div'); label.className='section-label'; label.textContent='👨‍👩‍👧 Watch Together — Multiple people need these';
+    label.style.marginBottom='.75rem'; el.appendChild(label);
+    const box=document.createElement('div'); box.className='family-overlap';
+    watchTogether.forEach(x=>{
+      const row=document.createElement('div'); row.className='overlap-item';
+      row.innerHTML=`
+        <div class="overlap-info">
+          <div class="overlap-title" style="cursor:pointer" onclick="showContentDetail('${x.content.id}')">${x.content.emoji} ${x.content.title}</div>
+          <div class="overlap-who">${x.needers.join(', ')} still need to watch</div>
+        </div>
+        <div class="overlap-count">${x.needers.length} people</div>`;
+      box.appendChild(row);
+    });
+    el.appendChild(box);
+  }
+  if(soloWatch.length){
+    const label=document.createElement('div'); label.className='section-label'; label.textContent='🧑 Solo Watches — Only one person needs these';
+    label.style.marginTop='1.5rem'; label.style.marginBottom='.75rem'; el.appendChild(label);
+    const box=document.createElement('div'); box.className='card';
+    soloWatch.forEach(x=>{
+      const row=document.createElement('div'); row.style.cssText='display:flex;align-items:center;gap:10px;padding:.5rem 0;border-bottom:1px solid var(--border)';
+      row.innerHTML=`
+        <span style="font-size:1.1rem">${x.content.emoji}</span>
+        <div style="flex:1;cursor:pointer" onclick="showContentDetail('${x.content.id}')">
+          <div style="font-size:.86rem;color:var(--cream)">${x.content.title}</div>
+          <div style="font-size:.72rem;color:var(--cream-2)">${x.needers[0]} · ${x.content.runtime}</div>
+        </div>`;
+      box.appendChild(row);
+    });
+    el.appendChild(box);
+  }
+  if(!sorted.length){
+    el.innerHTML='<div class="card text-center" style="padding:2rem"><div style="font-size:2rem">🎉</div><div class="serif" style="font-size:1.2rem;color:var(--gold-l);margin-top:.5rem">The whole family is ready!</div></div>';
+  }
+  showScreen('family');
+}
+
+// ══════════════════════════════════════════════════════════
+// USER MODAL (add/edit)
+// ══════════════════════════════════════════════════════════
+function openAddModal(){ editingUser=null; buildModalEmoji(); document.getElementById('modal-name').value=''; document.getElementById('modal-user-title').textContent='Add Family Member'; document.getElementById('modal-delete-btn').style.display='none'; openModal('modal-user') }
+function openEditModal(name){ editingUser=name; buildModalEmoji(); const d=getUserData(name); document.getElementById('modal-name').value=name; document.getElementById('modal-user-title').textContent='Edit '+name; document.getElementById('modal-delete-btn').style.display=''; openModal('modal-user') }
+
+function buildModalEmoji(){
+  const el=document.getElementById('modal-emoji-row'); el.innerHTML='';
+  EMOJIS.forEach((e,i)=>{
+    const b=document.createElement('div'); b.className='emoji-btn'+(i===0?' sel':'');
+    b.textContent=e; b.onclick=()=>{ document.querySelectorAll('#modal-emoji-row .emoji-btn').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); selectedEmoji=e; };
+    el.appendChild(b);
+  });
+}
+
+function saveUser(){
+  const name=document.getElementById('modal-name').value.trim();
+  if(!name){alert('Please enter a name.');return}
+  const profiles=getProfiles();
+  if(editingUser){
+    const old=profiles[editingUser];
+    delete profiles[editingUser];
+    old.emoji=selectedEmoji;
+    profiles[name]=old;
+  } else {
+    if(profiles[name]){alert('Name already taken.');return}
+    // New user goes through onboarding
+    closeModal('modal-user');
+    startOnboarding(null);
+    document.getElementById('ob-name').value=name;
+    return;
+  }
+  saveProfiles(profiles);
+  closeModal('modal-user');
+  buildProfileGrid();
+}
+
+function deleteModalUser(){
+  if(!editingUser) return;
+  if(!confirm(`Delete ${editingUser}'s profile? This cannot be undone.`)) return;
+  const p=getProfiles(); delete p[editingUser]; saveProfiles(p);
+  closeModal('modal-user'); buildProfileGrid();
+}
+
+function deleteCurrentUser(){
+  if(!currentUser) return;
+  if(!confirm(`Delete ${currentUser}'s profile? This cannot be undone.`)) return;
+  const p=getProfiles(); delete p[currentUser]; saveProfiles(p);
+  goHome();
+}
+
+// ══════════════════════════════════════════════════════════
+// SHARE MODAL
+// ══════════════════════════════════════════════════════════
+function getSortedWatchlist(data){
+  const relevant=getRelevantContent(data);
+  const hidden=data.wlHidden||{};
+  const boosts=data.wlBoosts||{};
+  const deprio=data.wlDeprio||{};
+  const wl=relevant.filter(c=>!data.checklist[c.id]&&!hidden[c.id]);
+  return [...wl].sort((a,b)=>{
+    const aScore=(boosts[a.id]?2:a.priority?1:0)+(deprio[a.id]?-1:0);
+    const bScore=(boosts[b.id]?2:b.priority?1:0)+(deprio[b.id]?-1:0);
+    if(aScore!==bScore) return bScore-aScore;
+    return (b.attractions||[]).length-(a.attractions||[]).length;
+  });
+}
+
+function openShareModal(){
+  if(!currentUser) return;
+  const data=getUserData(currentUser);
+  const wl=getSortedWatchlist(data);
+  const preview=document.getElementById('share-preview');
+  preview.innerHTML=`
+    <div class="share-header">
+      <span style="font-size:2rem">${data.emoji||'🧑'}</span>
+      <div>
+        <div class="share-name">${currentUser}'s Watchlist</div>
+        <div class="share-sub">Disneyland Prep · ${data.dateFrom?fmtDate(data.dateFrom):data.tripMode==='browsing'?'Just browsing':'Trip coming up'}</div>
+      </div>
+      <span style="font-size:1.5rem;margin-left:auto">🏰</span>
+    </div>
+    ${wl.length?wl.slice(0,6).map((c,i)=>`
+      <div class="share-wi">
+        <div class="share-num">${i+1}</div>
+        <div class="share-title">${c.emoji} ${c.title} <span style="font-size:.72rem;color:rgba(242,237,227,.4)">${c.runtime}</span></div>
+      </div>`).join('')
+    :'<div style="text-align:center;padding:.5rem;font-size:.85rem;color:rgba(242,237,227,.5)">🎉 All caught up!</div>'}
+    <div style="margin-top:.75rem;padding-top:.75rem;border-top:1px solid rgba(201,168,76,.2);font-size:.7rem;color:rgba(242,237,227,.3);text-align:center">✦ Disneyland Resort · Anaheim, CA</div>
+  `;
+  openModal('modal-share');
+}
+
+function downloadShareCard(){
+  const data=getUserData(currentUser);
+  const wl=getSortedWatchlist(data);
+  const canvas=document.getElementById('share-canvas');
+  const itemCount=Math.min(wl.length,6);
+  canvas.width=600;
+  canvas.height=itemCount>0?140+itemCount*52:220;
+  canvas.style.display='block';
+  const ctx=canvas.getContext('2d');
+  // Background gradient
+  const grad=ctx.createLinearGradient(0,0,0,canvas.height);
+  grad.addColorStop(0,'#0D1928'); grad.addColorStop(1,'#1A2B44');
+  ctx.fillStyle=grad; ctx.fillRect(0,0,canvas.width,canvas.height);
+  // Stars
+  for(let i=0;i<40;i++){
+    ctx.fillStyle=`rgba(255,255,255,${Math.random()*.4+.1})`;
+    ctx.beginPath(); ctx.arc(Math.random()*600,Math.random()*canvas.height,Math.random()*1.2+.3,0,Math.PI*2); ctx.fill();
+  }
+  // Gold border
+  ctx.strokeStyle='rgba(201,168,76,0.4)'; ctx.lineWidth=1.5;
+  roundRect(ctx,10,10,canvas.width-20,canvas.height-20,8);
+  // Castle emoji area
+  ctx.fillStyle='rgba(201,168,76,0.08)';
+  ctx.fillRect(0,0,canvas.width,90);
+  ctx.fillStyle='rgba(201,168,76,0.25)'; ctx.fillRect(0,90,canvas.width,1);
+  // Title
+  ctx.fillStyle='#E8D5A0'; ctx.font='bold 20px Georgia,serif';
+  ctx.fillText(`🏰  ${currentUser}'s Watchlist`,28,46);
+  ctx.fillStyle='rgba(242,237,227,0.55)'; ctx.font='13px Arial,sans-serif';
+  ctx.fillText(`Disneyland Prep  ·  ${data.dateFrom?fmtDate(data.dateFrom):'Trip coming up'}`,28,68);
+  // Items
+  if(wl.length){
+    wl.slice(0,6).forEach((c,i)=>{
+      const y=108+i*52;
+      // Row bg on alternating
+      if(i%2===0){ ctx.fillStyle='rgba(255,255,255,.025)'; ctx.fillRect(18,y-18,canvas.width-36,50); }
+      // Number bubble
+      ctx.fillStyle='rgba(201,168,76,0.85)'; ctx.beginPath(); ctx.arc(38,y+6,13,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='#080F1C'; ctx.font='bold 12px Arial'; ctx.textAlign='center';
+      ctx.fillText(i+1,38,y+10); ctx.textAlign='left';
+      // Title
+      ctx.fillStyle='#F2EDE3'; ctx.font='15px Arial';
+      const title=c.title.length>38?c.title.substring(0,36)+'…':c.title;
+      ctx.fillText(`${c.emoji}  ${title}`,60,y+8);
+      ctx.fillStyle='rgba(242,237,227,0.4)'; ctx.font='11px Arial';
+      ctx.fillText(c.runtime,62,y+26);
+    });
+  } else {
+    ctx.fillStyle='#E8D5A0'; ctx.font='italic 18px Georgia,serif'; ctx.textAlign='center';
+    ctx.fillText('🎉  All caught up — ready for the magic!',canvas.width/2,canvas.height/2+6);
+    ctx.textAlign='left';
+  }
+  // Footer
+  ctx.fillStyle='rgba(201,168,76,0.35)'; ctx.fillRect(0,canvas.height-34,canvas.width,1);
+  ctx.fillStyle='rgba(242,237,227,0.3)'; ctx.font='11px Arial'; ctx.textAlign='center';
+  ctx.fillText('✦  Disneyland Resort  ·  California',canvas.width/2,canvas.height-14);
+  ctx.textAlign='left';
+  // Download via blob (more reliable across browsers)
+  canvas.toBlob(blob=>{
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url; a.download=`${currentUser.replace(/\s+/g,'-')}-disneyland-watchlist.png`;
+    document.body.appendChild(a); a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); },1000);
+  },'image/png');
+  canvas.style.display='none';
+}
+
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath(); ctx.moveTo(x+r,y);
+  ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath(); ctx.stroke();
+}
+
+function shareViaText(){
+  if(!currentUser) return;
+  const data=getUserData(currentUser);
+  const wl=getSortedWatchlist(data);
+  let msg=`🏰 ${currentUser}'s Disneyland Watchlist`;
+  if(data.dateFrom) msg+=`\nTrip: ${fmtDate(data.dateFrom)}`;
+  else if(data.tripMode==='browsing') msg+='\n✨ Just browsing for now';
+  else if(data.tripMode==='planning') msg+='\n🗓 Still planning the trip';
+  msg+='\n\n';
+  if(wl.length){ wl.slice(0,8).forEach((c,i)=>{ msg+=`${i+1}. ${c.emoji} ${c.title} (${c.runtime})\n`; }); }
+  else { msg+='🎉 All caught up — ready for the magic!'; }
+  window.open(`sms:?body=${encodeURIComponent(msg)}`, '_self');
+}
+
+// ══════════════════════════════════════════════════════════
+// MODALS
+// ══════════════════════════════════════════════════════════
+function openModal(id){ document.getElementById(id).classList.add('open') }
+function closeModal(id){ document.getElementById(id).classList.remove('open') }
+document.querySelectorAll('.modal-overlay').forEach(m=>{ m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('open') }) });
+
+// ══════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════
+buildStars();
+buildProfileGrid();
+
+// Persistent session — remember last user across page reloads
+function saveSession(name){ try{localStorage.setItem('dlm_session',name)}catch{} }
+function clearSession(){ try{localStorage.removeItem('dlm_session')}catch{} }
+function getSession(){ try{return localStorage.getItem('dlm_session')||null}catch{return null} }
+
+// Override goHome to clear session
+const _origGoHome=goHome;
+goHome=function(){ clearSession(); _origGoHome(); };
+
+// Override loadUser to save session
+const _origLoadUser=loadUser;
+loadUser=function(name){ saveSession(name); _origLoadUser(name); };
+
+// On init: check for returning session
+const lastUser=getSession();
+const profiles=getProfiles();
+if(lastUser&&profiles[lastUser]){
+  loadUser(lastUser);
+}
+// Always wire Add button (session restore may leave home screen hidden but btn still needs to work)
+const _addBtn=document.querySelector('#screen-home .btn-gold');
+if(_addBtn) _addBtn.onclick=()=>startOnboarding(null);
+</script>
+</body>
+</html>
